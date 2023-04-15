@@ -1,5 +1,8 @@
 import sys
 import os
+import serial
+import serial.tools.list_ports
+import time
 from PyQt5 import uic
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
@@ -12,9 +15,12 @@ class MainWidget(QWidget):
     def __init__(self):
         QWidget.__init__(self)
         uic.loadUi('MainWidget.ui', self)
-        self.initButtonSignals()
-
+        self.ser = None
         self.outMount = [0]
+
+        self.initButtonSignals()
+        self.updateCOMPorts()
+        
         # self.setWindowFlag(Qt.FramelessWindowHint)
         # self.showFullScreen()
         
@@ -22,6 +28,7 @@ class MainWidget(QWidget):
         # timer.timeout.connect(self.updateChart)
         # timer.start(40)
         # self.initGraph()
+        
 
     def initButtonSignals(self):
         # Keypad
@@ -37,14 +44,21 @@ class MainWidget(QWidget):
         self.pad0Button.clicked.connect(self.onPad0ButtonClicked)
         self.padDeleteButton.clicked.connect(self.onPadDeleteButtonClicked)
         # Outlet select button
-        self.setButton.toggled.connect(self.onSetButtonToggled)
+        self.setButton.clicked.connect(self.onSetButtonToggled)
         # Outlet select button
         self.out1Button.toggled.connect(self.onOut1ButtonToggled)
         self.out2Button.toggled.connect(self.onOut2ButtonToggled)
         self.out3Button.toggled.connect(self.onOut3ButtonToggled)
         self.out4Button.toggled.connect(self.onOut4ButtonToggled)
         self.out5Button.toggled.connect(self.onOut5ButtonToggled)
+        # COM Port ComboBox Selected
+        self.comPortsComboBox.currentIndexChanged.connect(self.onComPortsComboBoxIndexChanged)
 
+    def updateCOMPorts(self):
+        self.comPortsComboBox.addItem("-") # Not Connected
+        ports = serial.tools.list_ports.comports()
+        for port in ports:
+            self.comPortsComboBox.addItem(port.device)
         
     @pyqtSlot()
     def onPad1ButtonClicked(self):
@@ -124,8 +138,11 @@ class MainWidget(QWidget):
 
     @pyqtSlot()
     def onSetButtonToggled(self):
-        # TODO: Send data to Arduino
-        pass
+        self.ser.write(b'on\n')
+        print("on!!")
+        time.sleep(1)
+        self.ser.write(b'off\n')
+        print("off!!")
 
     @pyqtSlot(bool)
     def onOut1ButtonToggled(self, toggled):
@@ -152,7 +169,14 @@ class MainWidget(QWidget):
         if toggled:
             self.outletLabel.setText(self.out5Button.text())
 
-
+    @pyqtSlot(int)
+    def onComPortsComboBoxIndexChanged(self, idx):
+        if self.ser != None:
+            self.ser.close()
+            self.setButton.setEnabled(False)
+        if idx != 0:
+            self.ser = serial.Serial(self.comPortsComboBox.currentText(), 9600)
+            self.setButton.setEnabled(True)
 
 if __name__ == '__main__':
     import signal
