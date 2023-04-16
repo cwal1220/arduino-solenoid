@@ -138,11 +138,18 @@ class MainWidget(QWidget):
 
     @pyqtSlot()
     def onSetButtonToggled(self):
-        self.ser.write(b'on\n')
-        print("on!!")
-        time.sleep(1)
-        self.ser.write(b'off\n')
-        print("off!!")
+        if self.out1Button.isChecked():
+            sendStr = '1,' + str(self.outSpinBox.value()) + '\n'
+        if self.out2Button.isChecked():
+            sendStr = '2,' + str(self.outSpinBox.value()) + '\n'
+        if self.out3Button.isChecked():
+            sendStr = '3,' + str(self.outSpinBox.value()) + '\n'
+        if self.out4Button.isChecked():
+            sendStr = '4,' + str(self.outSpinBox.value()) + '\n'
+        if self.out5Button.isChecked():
+            sendStr = '5,' + str(self.outSpinBox.value()) + '\n'
+        print(sendStr)
+        self.ser.write(bytes(sendStr, 'utf-8'))
 
     @pyqtSlot(bool)
     def onOut1ButtonToggled(self, toggled):
