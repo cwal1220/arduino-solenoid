@@ -153,48 +153,54 @@ void loop() {
       digitalWrite(solenoidNum, ammount);
       if(solenoidNum == 1)
       {
-        if(digitalRead(PHOTO_SENSOR_1_PIN) == 0) // Cup on Sensor
+        while(digitalRead(PHOTO_SENSOR_1_PIN) == 1) // Cup on Sensor
         {
-          flowSensor1Amount = getSensorCountFromMilliliter(ammount);
-          flowSensor1Enabled = true;
-          digitalWrite(SOLENOID_1_PIN, HIGH);
+          delay(2000); // 2초마다 컵이 있는지 검사
         }
+        flowSensor1Amount = getSensorCountFromMilliliter(ammount);
+        flowSensor1Enabled = true;
+        digitalWrite(SOLENOID_1_PIN, HIGH);
       }
       else if(solenoidNum == 2)
       {
-        if(digitalRead(PHOTO_SENSOR_2_PIN) == 0) // Cup on Sensor
+        while(digitalRead(PHOTO_SENSOR_2_PIN) == 1) // Cup on Sensor
         {
-          flowSensor2Amount = getSensorCountFromMilliliter(ammount);
-          flowSensor2Enabled = true;
-          digitalWrite(SOLENOID_2_PIN, HIGH);
+          delay(2000); // 2초마다 컵이 있는지 검사
         }
+        flowSensor2Amount = getSensorCountFromMilliliter(ammount);
+        flowSensor2Enabled = true;
+        digitalWrite(SOLENOID_2_PIN, HIGH);
+
       }
       else if(solenoidNum == 3)
       {
-        if(digitalRead(PHOTO_SENSOR_3_PIN) == 0) // Cup on Sensor
+        while(digitalRead(PHOTO_SENSOR_3_PIN) == 1) // Cup on Sensor
         {
-          flowSensor3Amount = getSensorCountFromMilliliter(ammount);
-          flowSensor3Enabled = true;
-          digitalWrite(SOLENOID_3_PIN, HIGH);
+          delay(2000); // 2초마다 컵이 있는지 검사
         }
+        flowSensor3Amount = getSensorCountFromMilliliter(ammount);
+        flowSensor3Enabled = true;
+        digitalWrite(SOLENOID_3_PIN, HIGH);
       }
       else if(solenoidNum == 4)
       {
-        if(digitalRead(PHOTO_SENSOR_4_PIN) == 0) // Cup on Sensor
+        while(digitalRead(PHOTO_SENSOR_4_PIN) == 1) // Cup on Sensor
         {
-          flowSensor4Amount = getSensorCountFromMilliliter(ammount);
-          flowSensor4Enabled = true;
-          digitalWrite(SOLENOID_4_PIN, HIGH);
+          delay(2000); // 2초마다 컵이 있는지 검사
         }
+        flowSensor4Amount = getSensorCountFromMilliliter(ammount);
+        flowSensor4Enabled = true;
+        digitalWrite(SOLENOID_4_PIN, HIGH);
       }
       else if(solenoidNum == 5)
       {
-        if(digitalRead(PHOTO_SENSOR_5_PIN) == 0) // Cup on Sensor
+        while(digitalRead(PHOTO_SENSOR_5_PIN) == 1) // Cup on Sensor
         {
-          flowSensor5Amount = getSensorCountFromMilliliter(ammount);
-          flowSensor5Enabled = true;
-          digitalWrite(SOLENOID_5_PIN, HIGH);
+          delay(2000); // 2초마다 컵이 있는지 검사          
         }
+        flowSensor5Amount = getSensorCountFromMilliliter(ammount);
+        flowSensor5Enabled = true;
+        digitalWrite(SOLENOID_5_PIN, HIGH);
       }
       else
       {
