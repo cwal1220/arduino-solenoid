@@ -11,10 +11,17 @@ from PyQt5.uic import *
 from PyQt5.QtGui import QPainter
 
 
+## python실행파일 디렉토리
+BASE_DIR = os.path.dirname(os.path.abspath(__file__)) 
+Ui_MainWindow, QtBaseClass = uic.loadUiType(BASE_DIR + r'\MainWidget.ui')
+
 class MainWidget(QWidget):
     def __init__(self):
         QWidget.__init__(self)
-        uic.loadUi('MainWidget.ui', self)
+        # uic.loadUi('MainWidget.ui', self)
+        uic.loadUi(BASE_DIR + r'\MainWidget.ui', self)
+        # self.ui = Ui_MainWindow()
+
         self.ser = None
         self.outMount = [0]
 
