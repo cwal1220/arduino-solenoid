@@ -29,10 +29,9 @@ unsigned long flowSensor4Amount = 0;
 unsigned long flowSensor5Amount = 0;
 
 // YF-S201
-const float PULSE_PER_MILLILITER = 0.450;
+// const float PULSE_PER_MILLILITER = 0.450;
 // YF-S401
-// const float PULSE_PER_MILLILITER = 5.880;
-
+const float PULSE_PER_MILLILITER = 5.880; // 5.880
 
 // Variable for user input string
 String inputString = ""; 
@@ -62,11 +61,11 @@ void setup()
   pinMode(FLOW_SENSOR_5_PIN, INPUT);
 
   // Set Initial status
-  digitalWrite(SOLENOID_1_PIN, LOW);
-  digitalWrite(SOLENOID_2_PIN, LOW);
-  digitalWrite(SOLENOID_3_PIN, LOW);
-  digitalWrite(SOLENOID_4_PIN, LOW);
-  digitalWrite(SOLENOID_5_PIN, LOW);
+  digitalWrite(SOLENOID_1_PIN, HIGH);
+  digitalWrite(SOLENOID_2_PIN, HIGH);
+  digitalWrite(SOLENOID_3_PIN, HIGH);
+  digitalWrite(SOLENOID_4_PIN, HIGH);
+  digitalWrite(SOLENOID_5_PIN, HIGH);
   digitalWrite(FLOW_SENSOR_1_PIN, HIGH);
   digitalWrite(FLOW_SENSOR_2_PIN, HIGH);
   digitalWrite(FLOW_SENSOR_3_PIN, HIGH);
@@ -91,7 +90,7 @@ void FLOW_SENSORE_1_ISR()
 {
   if(flowSensor1Amount <= 0 && flowSensor1Enabled)
   {
-    digitalWrite(SOLENOID_1_PIN, LOW); // Valve close
+    digitalWrite(SOLENOID_1_PIN, HIGH); // Valve close
     flowSensor1Enabled = false;
   }
   flowSensor1Amount--;
@@ -101,7 +100,7 @@ void FLOW_SENSORE_2_ISR()
 {
   if(flowSensor2Amount <= 0 && flowSensor2Enabled)
   {
-    digitalWrite(SOLENOID_2_PIN, LOW); // Valve close
+    digitalWrite(SOLENOID_2_PIN, HIGH); // Valve close
     flowSensor2Enabled = false;
   }
   flowSensor2Amount--;
@@ -111,7 +110,7 @@ void FLOW_SENSORE_3_ISR()
 {
   if(flowSensor3Amount <= 0 && flowSensor3Enabled)
   {
-    digitalWrite(SOLENOID_3_PIN, LOW); // Valve close
+    digitalWrite(SOLENOID_3_PIN, HIGH); // Valve close
     flowSensor3Enabled = false;
   }
   flowSensor3Amount--;
@@ -121,7 +120,7 @@ void FLOW_SENSORE_4_ISR()
 {
   if(flowSensor4Amount <= 0 && flowSensor4Enabled)
   {
-    digitalWrite(SOLENOID_4_PIN, LOW); // Valve close
+    digitalWrite(SOLENOID_4_PIN, HIGH); // Valve close
     flowSensor4Enabled = false;
   }
   flowSensor4Amount--;
@@ -131,7 +130,7 @@ void FLOW_SENSORE_5_ISR()
 {
   if(flowSensor5Amount <= 0 && flowSensor5Enabled)
   {
-    digitalWrite(SOLENOID_5_PIN, LOW); // Valve close
+    digitalWrite(SOLENOID_5_PIN, HIGH); // Valve close
     flowSensor5Enabled = false;
   }
   flowSensor5Amount--;
@@ -155,52 +154,52 @@ void loop() {
       {
         while(digitalRead(PHOTO_SENSOR_1_PIN) == 1) // Cup on Sensor
         {
-          delay(2000); // 2초마다 컵이 있는지 검사
+          delay(1000); // 1초마다 컵이 있는지 검사
         }
         flowSensor1Amount = getSensorCountFromMilliliter(ammount);
         flowSensor1Enabled = true;
-        digitalWrite(SOLENOID_1_PIN, HIGH);
+        digitalWrite(SOLENOID_1_PIN, LOW);
       }
       else if(solenoidNum == 2)
       {
         while(digitalRead(PHOTO_SENSOR_2_PIN) == 1) // Cup on Sensor
         {
-          delay(2000); // 2초마다 컵이 있는지 검사
+          delay(1000); // 1초마다 컵이 있는지 검사
         }
         flowSensor2Amount = getSensorCountFromMilliliter(ammount);
         flowSensor2Enabled = true;
-        digitalWrite(SOLENOID_2_PIN, HIGH);
+        digitalWrite(SOLENOID_2_PIN, LOW);
 
       }
       else if(solenoidNum == 3)
       {
         while(digitalRead(PHOTO_SENSOR_3_PIN) == 1) // Cup on Sensor
         {
-          delay(2000); // 2초마다 컵이 있는지 검사
+          delay(1000); // 1초마다 컵이 있는지 검사
         }
         flowSensor3Amount = getSensorCountFromMilliliter(ammount);
         flowSensor3Enabled = true;
-        digitalWrite(SOLENOID_3_PIN, HIGH);
+        digitalWrite(SOLENOID_3_PIN, LOW);
       }
       else if(solenoidNum == 4)
       {
         while(digitalRead(PHOTO_SENSOR_4_PIN) == 1) // Cup on Sensor
         {
-          delay(2000); // 2초마다 컵이 있는지 검사
+          delay(1000); // 1초마다 컵이 있는지 검사
         }
         flowSensor4Amount = getSensorCountFromMilliliter(ammount);
         flowSensor4Enabled = true;
-        digitalWrite(SOLENOID_4_PIN, HIGH);
+        digitalWrite(SOLENOID_4_PIN, LOW);
       }
       else if(solenoidNum == 5)
       {
         while(digitalRead(PHOTO_SENSOR_5_PIN) == 1) // Cup on Sensor
         {
-          delay(2000); // 2초마다 컵이 있는지 검사          
+          delay(1000); // 1초마다 컵이 있는지 검사          
         }
         flowSensor5Amount = getSensorCountFromMilliliter(ammount);
         flowSensor5Enabled = true;
-        digitalWrite(SOLENOID_5_PIN, HIGH);
+        digitalWrite(SOLENOID_5_PIN, LOW);
       }
       else
       {
