@@ -1,5 +1,5 @@
 # -*- mode: python ; coding: utf-8 -*-
-ui = [{'MainWidget.ui', '.'}]
+ui = [('MainWidget.ui', '.')]
 
 block_cipher = None
 
