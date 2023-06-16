@@ -32,13 +32,13 @@ unsigned long flowSensor5Amount = 0;
 // const float PULSE_PER_MILLILITER = 0.450;
 // YF-S401
 const float PULSE_PER_MILLILITER = 5.880; // 5.880
-
+const float WATERPUMP_CALIBRATION_SCALE = 1.170;
 // Variable for user input string
 String inputString = ""; 
 
 int getSensorCountFromMilliliter(int milliliter)
 {
-  return round(milliliter * PULSE_PER_MILLILITER);
+  return round(milliliter * PULSE_PER_MILLILITER * WATERPUMP_CALIBRATION_SCALE);
 }
 
 void setup() 
