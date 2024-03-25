@@ -146,15 +146,15 @@ class MainWidget(QWidget):
     @pyqtSlot()
     def onSetButtonToggled(self):
         if self.out1Button.isChecked():
-            sendStr = '1,' + str(self.outSpinBox.value()) + '\n'
+            sendStr = '1,' + str(self.outSpinBox.value()) + ',' + self.nameEdit.text() + '\n'
         if self.out2Button.isChecked():
-            sendStr = '2,' + str(self.outSpinBox.value()) + '\n'
+            sendStr = '2,' + str(self.outSpinBox.value()) + ',' + self.nameEdit.text() + '\n'
         if self.out3Button.isChecked():
-            sendStr = '3,' + str(self.outSpinBox.value()) + '\n'
+            sendStr = '3,' + str(self.outSpinBox.value()) + ',' + self.nameEdit.text() + '\n'
         if self.out4Button.isChecked():
-            sendStr = '4,' + str(self.outSpinBox.value()) + '\n'
+            sendStr = '4,' + str(self.outSpinBox.value()) + ',' + self.nameEdit.text() + '\n'
         if self.out5Button.isChecked():
-            sendStr = '5,' + str(self.outSpinBox.value()) + '\n'
+            sendStr = '5,' + str(self.outSpinBox.value()) + ',' + self.nameEdit.text() + '\n'
         print(sendStr)
         self.ser.write(bytes(sendStr, 'utf-8'))
 
