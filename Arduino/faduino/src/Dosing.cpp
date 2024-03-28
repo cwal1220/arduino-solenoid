@@ -7,9 +7,15 @@ Dosing::Dosing(unsigned char _pin)
     pin = _pin;
 }
 
-void Dosing::setMililiterPerMin(unsigned int _milliliterPerMin)
+void Dosing::setMililiterPerMs(float _milliliterPerMs)
 {
-    milliliterPerMin = _milliliterPerMin;
+    milliliterPerMs = _milliliterPerMs;
+}
+
+void Dosing::setDoseAmount(unsigned int _doseAmount)
+{
+    doseAmount = _doseAmount;
+    doseTime = (float)doseAmount / milliliterPerMs;
 }
 
 void Dosing::start(unsigned int _milliliter)
@@ -18,9 +24,17 @@ void Dosing::start(unsigned int _milliliter)
     bgnTime = millis();
 }
 
-void Dosing::check()
+bool Dosing::check()
 {
     endTime = millis();
+    if(doseTime < (endTime - bgnTime))
+    {
+        return false;
+    }
+    else
+    {
+        return true;
+    }
 }
 
 void Dosing::stop()

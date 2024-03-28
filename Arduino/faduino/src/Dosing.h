@@ -5,13 +5,16 @@ class Dosing
 {
 public:
     Dosing(unsigned char _pin);
-    void setMililiterPerMin(unsigned int _milliliterPerMin);
+    void setMililiterPerMs(float _milliliterPerMs);
+    void setDoseAmount(unsigned int _amount);
     void start(unsigned int _milliliter);
-    void check();
+    bool check();
     void stop();
 private:
     unsigned char pin;
-    unsigned int milliliterPerMin = 2000;
+    float milliliterPerMs = 0.0333333;
+    unsigned int doseAmount;
+    unsigned int doseTime;
     unsigned long bgnTime;
     unsigned long endTime;
 };
