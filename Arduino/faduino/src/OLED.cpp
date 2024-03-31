@@ -28,10 +28,12 @@ void initDisplays()
 void drawDisplay(unsigned int oledIdx, const char *name, unsigned int dose)
 {
     TCA9548A(oledIdx);
-    matrixPrint(0, 0, name);
-    matrixPrint(0, 0 + 16, String(dose).c_str());
+    display.clearDisplay();
+    matrixPrint(0, 20, name);
+    matrixPrint(0, 20 + 16, String(dose).c_str());
     display.display();
 }
+
 void clearDisplay(unsigned int oledIdx)
 {
     TCA9548A(oledIdx);
