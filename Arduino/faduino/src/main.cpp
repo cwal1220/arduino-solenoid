@@ -23,7 +23,7 @@ void checkProtocol()
             if(cmdStr.equals("SET"))
             {
                 int splitIdx2 = inputString.indexOf(",", splitIdx1+1);
-                int splitIdx3 = inputString.indexOf(",", splitIdx1+2);
+                int splitIdx3 = inputString.indexOf(",", splitIdx2+1);
 
                 String dosingPumpIdxStr = inputString.substring(splitIdx1+1, splitIdx2);
                 String nameStr = inputString.substring(splitIdx2+1, splitIdx3);
@@ -43,7 +43,7 @@ void checkProtocol()
             else if(cmdStr.equals("STAT"))
             {
                 int splitIdx2 = inputString.indexOf(",", splitIdx1+1);
-                int splitIdx3 = inputString.indexOf(",", splitIdx1+2);
+                int splitIdx3 = inputString.indexOf(",", splitIdx2+1);
 
                 String dosingPumpIdxStr = inputString.substring(splitIdx1+1, splitIdx2);
                 String dosingPumpStatStr = inputString.substring(splitIdx2+1, splitIdx3);
@@ -108,7 +108,7 @@ void checkDosingPump()
 
 void setup()
 {
-    Serial.begin(115200);
+    Serial.begin(9600);
     initDisplays();
     dosingPump[0].initPin(2); // TODO: Fix pin
     dosingPump[1].initPin(3); // TODO: Fix pin

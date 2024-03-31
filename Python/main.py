@@ -145,16 +145,20 @@ class MainWidget(QWidget):
 
     @pyqtSlot()
     def onSetButtonToggled(self):
+        # SET,1,홍길동,200 -> SET,1,OK,0
+        # STAT,1 -> STAT,1,RUN,0
+        # EXTR,1,300 -> EXTR,1,300,0(300)
+        # CLEAN,1 -> CLEAN,1,OK
         if self.out1Button.isChecked():
-            sendStr = '1,' + str(self.outSpinBox.value()) + ',' + self.nameEdit.text() + '\n'
+            sendStr = 'SET,' + '1,' +  self.nameEdit.text() + ',' + str(self.outSpinBox.value()) + '\n'
         if self.out2Button.isChecked():
-            sendStr = '2,' + str(self.outSpinBox.value()) + ',' + self.nameEdit.text() + '\n'
+            sendStr = 'SET,' + '2,' +  self.nameEdit.text() + ',' + str(self.outSpinBox.value()) + '\n'
         if self.out3Button.isChecked():
-            sendStr = '3,' + str(self.outSpinBox.value()) + ',' + self.nameEdit.text() + '\n'
+            sendStr = 'SET,' + '3,' +  self.nameEdit.text() + ',' + str(self.outSpinBox.value()) + '\n'
         if self.out4Button.isChecked():
-            sendStr = '4,' + str(self.outSpinBox.value()) + ',' + self.nameEdit.text() + '\n'
+            sendStr = 'SET,' + '4,' +  self.nameEdit.text() + ',' + str(self.outSpinBox.value()) + '\n'
         if self.out5Button.isChecked():
-            sendStr = '5,' + str(self.outSpinBox.value()) + ',' + self.nameEdit.text() + '\n'
+            sendStr = 'SET,' + '5,' +  self.nameEdit.text() + ',' + str(self.outSpinBox.value()) + '\n'
         print(sendStr)
         self.ser.write(bytes(sendStr, 'utf-8'))
 
