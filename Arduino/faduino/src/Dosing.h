@@ -4,19 +4,25 @@
 class Dosing
 {
 public:
-    Dosing(unsigned char _pin);
+    Dosing();
+    void initPin(unsigned char _pin);
     void setMililiterPerMs(float _milliliterPerMs);
     void setDoseAmount(unsigned int _amount);
     void start(unsigned int _milliliter);
-    bool check();
+    unsigned int check();
     void stop();
+
+    static const unsigned int WAIT = 0;
+    static const unsigned int RUN = 1;
+    static const unsigned int STOP = 2;
 private:
     unsigned char pin;
     float milliliterPerMs = 0.0333333;
-    unsigned int doseAmount;
-    unsigned int doseTime;
-    unsigned long bgnTime;
-    unsigned long endTime;
+    unsigned int doseAmount = 0;
+    unsigned int doseTime = 0;
+    unsigned long bgnTime = 0;
+    unsigned long endTime = 0;
+    unsigned int doseStat = STOP; // 0:WAIT 1:RUN, 2:STOP
 };
 
 #endif // DOSING_H
