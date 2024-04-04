@@ -16,6 +16,11 @@ void Dosing::setMililiterPerMs(float _milliliterPerMs)
     milliliterPerMs = _milliliterPerMs;
 }
 
+unsigned int Dosing::getDoseAmount()
+{
+    return doseAmount;
+}
+
 void Dosing::setDoseAmount(unsigned int _doseAmount)
 {
     doseAmount = _doseAmount;
@@ -37,7 +42,7 @@ unsigned int Dosing::check()
         endTime = millis();
         if(doseTime < (endTime - bgnTime))
         {
-            doseStat = STOP; // 시간이 다 되면 STOP
+            doseStat = END; // 시간이 다 되면 END
         }
         else
         {
@@ -54,4 +59,5 @@ void Dosing::stop()
     bgnTime = 0;
     endTime = 0;
     doseTime = 0;
+    doseStat = STOP;
 }

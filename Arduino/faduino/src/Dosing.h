@@ -7,6 +7,7 @@ public:
     Dosing();
     void initPin(unsigned char _pin);
     void setMililiterPerMs(float _milliliterPerMs);
+    unsigned int getDoseAmount();
     void setDoseAmount(unsigned int _amount);
     void start(unsigned int _milliliter);
     unsigned int check();
@@ -15,6 +16,7 @@ public:
     static const unsigned int WAIT = 0;
     static const unsigned int RUN = 1;
     static const unsigned int STOP = 2;
+    static const unsigned int END = 3;
 private:
     unsigned char pin;
     float milliliterPerMs = 0.0333333;

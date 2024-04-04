@@ -24,6 +24,7 @@ class MainWidget(QWidget):
 
         self.ser = None
         self.outMount = [0]
+        self.serialReadThread = SerialReadThread(self)
 
         self.initButtonSignals()
         self.updateCOMPorts()
@@ -190,11 +191,33 @@ class MainWidget(QWidget):
     @pyqtSlot(int)
     def onComPortsComboBoxIndexChanged(self, idx):
         if self.ser != None:
+            self.serialReadThread.terminateThead()
             self.ser.close()
             self.setButton.setEnabled(False)
         if idx != 0:
             self.ser = serial.Serial(self.comPortsComboBox.currentText(), 9600)
+            self.serialReadThread.start()
             self.setButton.setEnabled(True)
+
+class SerialReadThread(QThread):
+    def __init__(self, parent): 
+        super().__init__(parent)        
+        self.parent = parent
+        self.exitThread = False
+
+    def run(self):
+        while not self.exitThread:
+            #데이터가 있있다면
+            for c in self.parent.ser.read():
+                #line 변수에 차곡차곡 추가하여 넣는다.
+                print(chr(c), end='')
+
+    def terminateThead(self):
+        self.exitThread = True
+        # 쓰레드 종료
+        self.quit()
+        self.wait(5000)
+
 
 if __name__ == '__main__':
     import signal
@@ -204,3 +227,8 @@ if __name__ == '__main__':
     w.show()
     # w.showFullScreen()
     sys.exit(app.exec())
+
+
+
+
+

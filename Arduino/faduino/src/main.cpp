@@ -4,6 +4,8 @@
 Dosing dosingPump[5];
 String inputString;
 
+char* DOSING_STATUS_STR[3] = {"WAIT", "RUN", "STOP"};
+
 void checkProtocol()
 {
     // SET,1,홍길동,200 -> SET,1,OK,0
@@ -34,9 +36,12 @@ void checkProtocol()
 
                 if(dosingPumpIdx < 5)
                 {
+                    char sendStr[40] = {'\0',};
                     dosingPump[dosingPumpIdx].setDoseAmount(doseAmount);
                     clearDisplay(dosingPumpIdx);
                     drawDisplay(dosingPumpIdx, nameStr.c_str(), doseAmount);
+                    sprintf(sendStr, "SET,%d,OK,0\n", dosingPumpIdx+1);
+                    Serial.print(sendStr);
                 }
 
             }
@@ -54,7 +59,9 @@ void checkProtocol()
                 if(dosingPumpIdx < 5)
                 {
                     unsigned int dosingPumpStat = dosingPump[dosingPumpIdx].check();
-                    // TODO: write serial
+                    char sendStr[40] = {'\0',};
+                    sprintf(sendStr, "STAT,%d,%s,0\n", dosingPumpIdx+1, DOSING_STATUS_STR[dosingPumpStat]);
+                    Serial.print(sendStr);
                 }
             }
             else if(cmdStr.equals("EXTR"))
@@ -99,9 +106,12 @@ void checkDosingPump()
 {
     for(int i=0; i<5; i++)
     {
-        if(dosingPump[i].check() == Dosing::STOP)
+        if(dosingPump[i].check() == Dosing::END)
         {
             dosingPump[i].stop();
+            char sendStr[40] = {'\0',};
+            sprintf(sendStr, "EXTR,%d,%d,%d\n", i+1, dosingPump[i].getDoseAmount(), dosingPump[i].getDoseAmount());
+            Serial.print(sendStr);
         }
     }
 }
@@ -130,22 +140,4 @@ void loop()
 
     // Check Flow Sensor Status
 
-
-
-
-
-
-
-
-    // delay(100); // 짧은 딜레이
-
-    // for (int i = 0; i < 5; i++)
-    // {
-    //     drawDisplay(i, "찬", 500);
-    // }
-    // for (int i = 0; i < 5; i++)
-    // {
-    //     clearDisplay(i);
-    // }
-    // Serial.println(F("Loop..."));
 }
