@@ -8,8 +8,9 @@ public:
     void initPin(unsigned char _pin);
     void setMililiterPerMs(float _milliliterPerMs);
     unsigned int getDoseAmount();
+    unsigned int getDoseStat();
     void setDoseAmount(unsigned int _amount);
-    void start(unsigned int _milliliter);
+    void start();
     unsigned int check();
     void stop();
 

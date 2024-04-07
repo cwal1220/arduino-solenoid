@@ -7,8 +7,8 @@ Dosing::Dosing()
 
 void Dosing::initPin(unsigned char _pin)
 {
-    pinMode(pin, OUTPUT);
     pin = _pin;
+    pinMode(pin, OUTPUT);
 }
 
 void Dosing::setMililiterPerMs(float _milliliterPerMs)
@@ -21,6 +21,11 @@ unsigned int Dosing::getDoseAmount()
     return doseAmount;
 }
 
+unsigned int Dosing::getDoseStat()
+{
+    return doseStat;
+}
+
 void Dosing::setDoseAmount(unsigned int _doseAmount)
 {
     doseAmount = _doseAmount;
@@ -28,7 +33,7 @@ void Dosing::setDoseAmount(unsigned int _doseAmount)
     doseStat = WAIT;
 }
 
-void Dosing::start(unsigned int _milliliter)
+void Dosing::start()
 {
     digitalWrite(pin, HIGH);
     bgnTime = millis();

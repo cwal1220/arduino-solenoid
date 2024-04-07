@@ -26,27 +26,6 @@ const int FLOW_SENSOR_3_PIN = 19; // Interrupt 4
 const int FLOW_SENSOR_4_PIN = 20; // Interrupt 3
 const int FLOW_SENSOR_5_PIN = 21; // Interrupt 5
 
-bool dosingPump1Enabled = false;
-bool dosingPump2Enabled = false;
-bool dosingPump3Enabled = false;
-bool dosingPump4Enabled = false;
-bool dosingPump5Enabled = false;
-unsigned int dosingPump1Amount = 0;
-unsigned int dosingPump2Amount = 0;
-unsigned int dosingPump3Amount = 0;
-unsigned int dosingPump4Amount = 0;
-unsigned int dosingPump5Amount = 0;
-unsigned long dosingPump1BgnTime = 0;
-unsigned long dosingPump2BgnTime = 0;
-unsigned long dosingPump3BgnTime = 0;
-unsigned long dosingPump4BgnTime = 0;
-unsigned long dosingPump5BgnTime = 0;
-unsigned long dosingPump1EndTime = 0;
-unsigned long dosingPump2EndTime = 0;
-unsigned long dosingPump3EndTime = 0;
-unsigned long dosingPump4EndTime = 0;
-unsigned long dosingPump5EndTime = 0;
-
 // Variable for user input string
 String inputString = "";
 

@@ -1,10 +1,28 @@
+#include <MsTimer2.h>
 #include "OLED.h"
 #include "Dosing.h"
+#include "Button.h"
 
 Dosing dosingPump[5];
-String inputString;
+Button ledButton[5];
 
+String inputString;
 char* DOSING_STATUS_STR[3] = {"WAIT", "RUN", "STOP"};
+
+void ledTimerISR();
+
+// Total Dosing, LED Button Number
+const int SENSOR_NUM = 5;
+
+// Define Dosing Pump PINs: OUTPUT
+const int DOSING_PUMP_PIN[SENSOR_NUM] = {2, 3, 4, 5, 6};
+
+// Define Button LED PINs: OUTPUT
+const int BUTTON_PUSH_PIN[SENSOR_NUM] = {30, 32, 34, 36, 38};
+
+// Define Button Input PINs: INPUT
+const int BUTTON_LED_PIN[SENSOR_NUM] = {31, 33, 35, 37, 39};
+
 
 void checkProtocol()
 {
@@ -56,9 +74,9 @@ void checkProtocol()
 
                 unsigned int dosingPumpIdx = dosingPumpIdxStr.toInt()-1;
 
-                if(dosingPumpIdx < 5)
+                if(dosingPumpIdx < SENSOR_NUM)
                 {
-                    unsigned int dosingPumpStat = dosingPump[dosingPumpIdx].check();
+                    unsigned int dosingPumpStat = dosingPump[dosingPumpIdx].getDoseStat();
                     char sendStr[40] = {'\0',};
                     sprintf(sendStr, "STAT,%d,%s,0\n", dosingPumpIdx+1, DOSING_STATUS_STR[dosingPumpStat]);
                     Serial.print(sendStr);
@@ -74,9 +92,10 @@ void checkProtocol()
                 unsigned int dosingPumpIdx = dosingPumpIdxStr.toInt()-1;
                 unsigned int doseAmount = doseAmountStr.toInt();
 
-                if(dosingPumpIdx < 5)
+                if(dosingPumpIdx < SENSOR_NUM)
                 {
                     dosingPump[dosingPumpIdx].setDoseAmount(doseAmount);
+                    ledButton[dosingPumpIdx].blinkStart();
                 }
             }
             else if(cmdStr.equals("CLEAN"))
@@ -85,7 +104,7 @@ void checkProtocol()
 
                 unsigned int dosingPumpIdx = dosingPumpIdxStr.toInt()-1;
 
-                if(dosingPumpIdx < 5)
+                if(dosingPumpIdx < SENSOR_NUM)
                 {
                     dosingPump[dosingPumpIdx].setDoseAmount(200);
                     clearDisplay(dosingPumpIdx);
@@ -99,19 +118,40 @@ void checkProtocol()
 
 void checkButton()
 {
-
+    for(int idx=0; idx<SENSOR_NUM; idx++)
+    {
+        if(dosingPump[idx].getDoseStat() == Dosing::WAIT && ledButton[idx].isPushed())
+        {
+            dosingPump[idx].start();
+            char sendStr[40] = {'\0',};
+            sprintf(sendStr, "EXTR,%d,0,%d\n", idx+1, dosingPump[idx].getDoseAmount());
+            Serial.print(sendStr);
+            ledButton[idx].blinkStop();
+        }
+    }
 }
 
 void checkDosingPump()
 {
-    for(int i=0; i<5; i++)
+    for(int idx=0; idx<SENSOR_NUM; idx++)
     {
-        if(dosingPump[i].check() == Dosing::END)
+        if(dosingPump[idx].check() == Dosing::END)
         {
-            dosingPump[i].stop();
+            dosingPump[idx].stop();
             char sendStr[40] = {'\0',};
-            sprintf(sendStr, "EXTR,%d,%d,%d\n", i+1, dosingPump[i].getDoseAmount(), dosingPump[i].getDoseAmount());
+            sprintf(sendStr, "EXTR,%d,%d,%d\n", idx+1, dosingPump[idx].getDoseAmount(), dosingPump[idx].getDoseAmount());
             Serial.print(sendStr);
+        }
+    }
+}
+
+void ledTimerISR()
+{
+    for(int idx=0; idx<SENSOR_NUM; idx++)
+    {
+        if(ledButton[idx].getBlinkStarted())
+        {
+            ledButton[idx].setLedState(!ledButton[idx].getLedState());
         }
     }
 }
@@ -120,11 +160,14 @@ void setup()
 {
     Serial.begin(9600);
     initDisplays();
-    dosingPump[0].initPin(2); // TODO: Fix pin
-    dosingPump[1].initPin(3); // TODO: Fix pin
-    dosingPump[2].initPin(4); // TODO: Fix pin
-    dosingPump[3].initPin(5); // TODO: Fix pin
-    dosingPump[4].initPin(6); // TODO: Fix pin
+    for(int idx=0; idx<SENSOR_NUM; idx++)
+    {
+        dosingPump[0].initPin(DOSING_PUMP_PIN[idx]);
+        ledButton[0].initPin(BUTTON_PUSH_PIN[idx], BUTTON_LED_PIN[idx]);
+        // TODO: Add Flow Sensor
+    }
+    MsTimer2::set(1000, ledTimerISR);
+    MsTimer2::start();
 }
 
 void loop()
@@ -138,6 +181,5 @@ void loop()
     // Check Dosing Pump
     checkDosingPump();
 
-    // Check Flow Sensor Status
-
+    // TODO: Check Flow Sensor Status
 }

@@ -53,6 +53,8 @@ class MainWidget(QWidget):
         self.padDeleteButton.clicked.connect(self.onPadDeleteButtonClicked)
         # Outlet select button
         self.setButton.clicked.connect(self.onSetButtonToggled)
+        # Outlet extr button
+        self.extrButton.clicked.connect(self.onExtrButtonToggled)
         # Outlet select button
         self.out1Button.toggled.connect(self.onOut1ButtonToggled)
         self.out2Button.toggled.connect(self.onOut2ButtonToggled)
@@ -163,6 +165,25 @@ class MainWidget(QWidget):
         print(sendStr)
         self.ser.write(bytes(sendStr, 'utf-8'))
 
+    @pyqtSlot()
+    def onExtrButtonToggled(self):
+        # SET,1,홍길동,200 -> SET,1,OK,0
+        # STAT,1 -> STAT,1,RUN,0
+        # EXTR,1,300 -> EXTR,1,300,0(300)
+        # CLEAN,1 -> CLEAN,1,OK
+        if self.out1Button.isChecked():
+            sendStr = 'SET,' + '1,' +  self.nameEdit.text() + ',' + str(self.outSpinBox.value()) + '\n'
+        if self.out2Button.isChecked():
+            sendStr = 'SET,' + '2,' +  self.nameEdit.text() + ',' + str(self.outSpinBox.value()) + '\n'
+        if self.out3Button.isChecked():
+            sendStr = 'SET,' + '3,' +  self.nameEdit.text() + ',' + str(self.outSpinBox.value()) + '\n'
+        if self.out4Button.isChecked():
+            sendStr = 'SET,' + '4,' +  self.nameEdit.text() + ',' + str(self.outSpinBox.value()) + '\n'
+        if self.out5Button.isChecked():
+            sendStr = 'SET,' + '5,' +  self.nameEdit.text() + ',' + str(self.outSpinBox.value()) + '\n'
+        print(sendStr)
+        self.ser.write(bytes(sendStr, 'utf-8'))
+
     @pyqtSlot(bool)
     def onOut1ButtonToggled(self, toggled):
         if toggled:
@@ -194,10 +215,12 @@ class MainWidget(QWidget):
             self.serialReadThread.terminateThead()
             self.ser.close()
             self.setButton.setEnabled(False)
+            self.extrButton.setEnabled(False)
         if idx != 0:
             self.ser = serial.Serial(self.comPortsComboBox.currentText(), 9600)
             self.serialReadThread.start()
             self.setButton.setEnabled(True)
+            self.extrButton.setEnabled(True)
 
 class SerialReadThread(QThread):
     def __init__(self, parent): 
