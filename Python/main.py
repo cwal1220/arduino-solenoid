@@ -172,15 +172,15 @@ class MainWidget(QWidget):
         # EXTR,1,300 -> EXTR,1,300,0(300)
         # CLEAN,1 -> CLEAN,1,OK
         if self.out1Button.isChecked():
-            sendStr = 'SET,' + '1,' +  self.nameEdit.text() + ',' + str(self.outSpinBox.value()) + '\n'
+            sendStr = 'EXTR,' + '1,' + str(self.outSpinBox.value()) + '\n'
         if self.out2Button.isChecked():
-            sendStr = 'SET,' + '2,' +  self.nameEdit.text() + ',' + str(self.outSpinBox.value()) + '\n'
+            sendStr = 'EXTR,' + '2,' + str(self.outSpinBox.value()) + '\n'
         if self.out3Button.isChecked():
-            sendStr = 'SET,' + '3,' +  self.nameEdit.text() + ',' + str(self.outSpinBox.value()) + '\n'
+            sendStr = 'EXTR,' + '3,' + str(self.outSpinBox.value()) + '\n'
         if self.out4Button.isChecked():
-            sendStr = 'SET,' + '4,' +  self.nameEdit.text() + ',' + str(self.outSpinBox.value()) + '\n'
+            sendStr = 'EXTR,' + '4,' + str(self.outSpinBox.value()) + '\n'
         if self.out5Button.isChecked():
-            sendStr = 'SET,' + '5,' +  self.nameEdit.text() + ',' + str(self.outSpinBox.value()) + '\n'
+            sendStr = 'EXTR,' + '5,' + str(self.outSpinBox.value()) + '\n'
         print(sendStr)
         self.ser.write(bytes(sendStr, 'utf-8'))
 
