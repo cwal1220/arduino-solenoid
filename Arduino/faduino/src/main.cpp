@@ -18,16 +18,20 @@ void ledTimerISR();
 const int SENSOR_NUM = 5;
 
 // Define Dosing Pump PINs: OUTPUT
-const int DOSING_PUMP_PIN[SENSOR_NUM] = {2, 3, 4, 5, 6};
+// const int DOSING_PUMP_PIN[SENSOR_NUM] = {2, 3, 4, 5, 6}; // Arduino Mega
+const int DOSING_PUMP_PIN[SENSOR_NUM] = {43, 44, 45, 46, 47}; // Faduino
 
 // Define Button LED PINs: OUTPUT
-const int BUTTON_PUSH_PIN[SENSOR_NUM] = {30, 32, 34, 36, 38};
+// const int BUTTON_LED_PIN[SENSOR_NUM] = {31, 33, 35, 37, 39}; // Arduino Mega
+const int BUTTON_LED_PIN[SENSOR_NUM] = {38, 39, 40, 41, 42}; // Faduino
 
 // Define Button Input PINs: INPUT
-const int BUTTON_LED_PIN[SENSOR_NUM] = {31, 33, 35, 37, 39};
+// const int BUTTON_PUSH_PIN[SENSOR_NUM] = {30, 32, 34, 36, 38}; // Arduino Mega
+const int BUTTON_PUSH_PIN[SENSOR_NUM] = {37, 36, 35, 34, 33}; // Faduino
 
 // Define Float Sensor Input PINs: INPUT
-const int FLOAT_SENSOR_PIN[SENSOR_NUM] = {7, 8, 9, 10, 11};
+// const int FLOAT_SENSOR_PIN[SENSOR_NUM] = {7, 8, 9, 10, 11}; // Arduino Mega
+const int FLOAT_SENSOR_PIN[SENSOR_NUM] = {32, 31, 30, 29, 28}; // Faduino
 
 void checkProtocol()
 {
@@ -159,6 +163,23 @@ void checkDosingPump()
     }
 }
 
+void checkManualMode()
+{
+    for(int idx=0; idx<SENSOR_NUM; idx++)
+    {
+        if(dosingPump[idx].getDoseStat() == Dosing::STOP && ledButton[idx].isPushed())
+        {
+            ledButton[idx].setLedState(HIGH);
+            dosingPump[idx].startManual();
+        }
+        else if(dosingPump[idx].getDoseStat() == Dosing::MANUAL && !ledButton[idx].isPushed())
+        {
+            ledButton[idx].setLedState(LOW);
+            dosingPump[idx].stop();
+        }
+    }
+}
+
 void ledTimerISR()
 {
     for(int idx=0; idx<SENSOR_NUM; idx++)
@@ -196,4 +217,7 @@ void loop()
     checkDosingPump();
 
     // TODO: Check Float Sensor Status
+
+    // Check Manual Mode
+    checkManualMode();
 }

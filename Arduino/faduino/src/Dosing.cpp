@@ -40,6 +40,13 @@ void Dosing::start()
     doseStat = RUN; // RUN
 }
 
+void Dosing::startManual()
+{
+    digitalWrite(pin, HIGH);
+    doseStat = MANUAL;
+}
+
+
 unsigned int Dosing::check()
 {
     if(doseStat == 1) // RUN

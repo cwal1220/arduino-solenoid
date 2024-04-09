@@ -11,6 +11,7 @@ public:
     unsigned int getDoseStat();
     void setDoseAmount(unsigned int _amount);
     void start();
+    void startManual();
     unsigned int check();
     void stop();
 
@@ -18,6 +19,7 @@ public:
     static const unsigned int RUN = 1;
     static const unsigned int STOP = 2;
     static const unsigned int END = 3;
+    static const unsigned int MANUAL = 4;
 private:
     unsigned char pin;
     float milliliterPerMs = 0.0333333;
