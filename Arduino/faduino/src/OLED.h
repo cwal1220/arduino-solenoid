@@ -4,6 +4,9 @@
 
 void TCA9548A(uint8_t bus);
 void drawDisplay(unsigned int oledIdx, const char *name, unsigned int dose);
+void drawWait(unsigned int oledIdx);
+void drawExtr(unsigned int oledIdx);
+void drawDone(unsigned int oledIdx);
 void clearDisplay(unsigned int oledIdx);
 void initDisplays();
 void matrixPrint(int XPOS, int YPOS, const char *pChar);

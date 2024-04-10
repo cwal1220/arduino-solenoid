@@ -30,12 +30,33 @@ void drawDisplay(unsigned int oledIdx, const char *name, unsigned int dose)
     TCA9548A(oledIdx);
     display.clearDisplay();
     // name: 
-    matrixPrint(0, 8, "Name:");
-    matrixPrint(40, 8, name);
+    matrixPrint(0, 0, "이름:");
+    matrixPrint(42, 0, name);
     // Dose:
-    matrixPrint(0, 20 + 16, "Dose:");
-    matrixPrint(40, 20 + 16, String(dose).c_str());
-    matrixPrint(90, 20 + 16, "ml");
+    matrixPrint(0, 22, "용량:");
+    matrixPrint(42, 22, String(dose).c_str());
+    matrixPrint(80, 22, "ml");
+    display.display();
+}
+
+void drawWait(unsigned int oledIdx)
+{
+    TCA9548A(oledIdx);
+    matrixPrint(0, 43, "대기>");
+    display.display();
+}
+
+void drawExtr(unsigned int oledIdx)
+{
+    TCA9548A(oledIdx);
+    matrixPrint(43, 43, "추출>");
+    display.display();
+}
+
+void drawDone(unsigned int oledIdx)
+{
+    TCA9548A(oledIdx);
+    matrixPrint(85, 43, "완료!");
     display.display();
 }
 
@@ -44,6 +65,8 @@ void clearDisplay(unsigned int oledIdx)
     TCA9548A(oledIdx);
     display.clearDisplay();
 }
+
+
 
 void matrixPrint(int XPOS, int YPOS, const char *pChar)
 {

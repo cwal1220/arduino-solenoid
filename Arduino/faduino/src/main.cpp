@@ -114,6 +114,7 @@ void checkProtocol()
                 {
                     dosingPump[dosingPumpIdx].setDoseAmount(doseAmount);
                     ledButton[dosingPumpIdx].blinkStart();
+                    drawWait(dosingPumpIdx);
                 }
             }
             else if(cmdStr.equals("CLEAN"))
@@ -141,6 +142,7 @@ void checkButton()
         if(dosingPump[idx].getDoseStat() == Dosing::WAIT && ledButton[idx].isPushed())
         {
             dosingPump[idx].start();
+            drawExtr(idx);
             char sendStr[40] = {'\0',};
             sprintf(sendStr, "EXTR,%d,0,%d\n", idx+1, dosingPump[idx].getDoseAmount());
             Serial.print(sendStr);
@@ -156,6 +158,7 @@ void checkDosingPump()
         if(dosingPump[idx].check() == Dosing::END)
         {
             dosingPump[idx].stop();
+            drawDone(idx);
             char sendStr[40] = {'\0',};
             sprintf(sendStr, "EXTR,%d,%d,%d\n", idx+1, dosingPump[idx].getDoseAmount(), dosingPump[idx].getDoseAmount());
             Serial.print(sendStr);
@@ -201,7 +204,7 @@ void setup()
         ledButton[idx].initPin(BUTTON_PUSH_PIN[idx], BUTTON_LED_PIN[idx]);
         floatSensor[idx].initPin(FLOAT_SENSOR_PIN[idx]);
     }
-    MsTimer2::set(1000, ledTimerISR);
+    MsTimer2::set(500, ledTimerISR);
     MsTimer2::start();
 }
 
@@ -216,8 +219,8 @@ void loop()
     // Check Dosing Pump
     checkDosingPump();
 
-    // TODO: Check Float Sensor Status
-
     // Check Manual Mode
     checkManualMode();
+
+    yield;
 }
