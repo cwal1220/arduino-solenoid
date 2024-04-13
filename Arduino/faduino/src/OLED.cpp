@@ -19,9 +19,10 @@ void initDisplays()
     for (int i = 0; i < 5; i++)
     {
         TCA9548A(i);
-        display.begin(SSD1306_SWITCHCAPVCC, 0x3C);
-        display.display();
-        display.clearDisplay();
+        display.begin(SSD1306_SWITCHCAPVCC, 0x3C);        
+        // display.clearDisplay();
+        drawDisplay(i, "", 0);
+        // display.display();
     }
 }
 

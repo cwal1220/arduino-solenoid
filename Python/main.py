@@ -29,14 +29,6 @@ class MainWidget(QWidget):
         self.initButtonSignals()
         self.updateCOMPorts()
         
-        # self.setWindowFlag(Qt.FramelessWindowHint)
-        # self.showFullScreen()
-        
-        # timer = QTimer(self)
-        # timer.timeout.connect(self.updateChart)
-        # timer.start(40)
-        # self.initGraph()
-        
 
     def initButtonSignals(self):
         # Keypad
@@ -162,7 +154,8 @@ class MainWidget(QWidget):
             sendStr = 'SET,' + '4,' +  self.nameEdit.text() + ',' + str(self.outSpinBox.value()) + '\n'
         if self.out5Button.isChecked():
             sendStr = 'SET,' + '5,' +  self.nameEdit.text() + ',' + str(self.outSpinBox.value()) + '\n'
-        print(sendStr)
+        self.logEdit.append("[SEND] " + sendStr)
+        self.logEdit.moveCursor(QTextCursor.End)
         self.ser.write(bytes(sendStr, 'utf-8'))
 
     @pyqtSlot()
@@ -181,7 +174,8 @@ class MainWidget(QWidget):
             sendStr = 'EXTR,' + '4,' + str(self.outSpinBox.value()) + '\n'
         if self.out5Button.isChecked():
             sendStr = 'EXTR,' + '5,' + str(self.outSpinBox.value()) + '\n'
-        print(sendStr)
+        self.logEdit.append("[SEND] " + sendStr)
+        self.logEdit.moveCursor(QTextCursor.End)
         self.ser.write(bytes(sendStr, 'utf-8'))
 
     @pyqtSlot(bool)
@@ -227,13 +221,18 @@ class SerialReadThread(QThread):
         super().__init__(parent)        
         self.parent = parent
         self.exitThread = False
+        self.readLine = ''
 
     def run(self):
         while not self.exitThread:
             #데이터가 있있다면
             for c in self.parent.ser.read():
-                #line 변수에 차곡차곡 추가하여 넣는다.
-                print(chr(c), end='')
+                if chr(c) == '\n':
+                    self.parent.logEdit.append("[RECV] " + self.readLine)
+                    self.parent.logEdit.moveCursor(QTextCursor.End)
+                    self.readLine = ''
+                else:
+                    self.readLine += chr(c)
 
     def terminateThead(self):
         self.exitThread = True
