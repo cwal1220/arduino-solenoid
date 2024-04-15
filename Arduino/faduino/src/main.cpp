@@ -125,9 +125,14 @@ void checkProtocol()
 
                 if(dosingPumpIdx < SENSOR_NUM)
                 {
-                    dosingPump[dosingPumpIdx].setDoseAmount(200);
+                    dosingPump[dosingPumpIdx].setDoseAmount(100);
                     clearDisplay(dosingPumpIdx);
-                    drawDisplay(dosingPumpIdx, "CLEAN", 200);
+                    drawDisplay(dosingPumpIdx, "CLEAN", 100);
+                    dosingPump[dosingPumpIdx].start();
+                    drawDone(dosingPumpIdx);
+                    char sendStr[40] = {'\0',};
+                    sprintf(sendStr, "CLEAN,%d,OK\n", dosingPumpIdx+1);
+                    Serial.print(sendStr);
                 }
             }
             inputString = ""; // 입력 문자열 초기화
