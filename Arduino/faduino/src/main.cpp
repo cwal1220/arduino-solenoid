@@ -35,7 +35,7 @@ const int FLOAT_SENSOR_PIN[SENSOR_NUM] = {32, 31, 30, 29, 28}; // Faduino
 
 void checkProtocol()
 {
-    // SET,1,홍길동,200 -> SET,1,OK,0
+    // SET,1,홍길동,타이레놀,200 -> SET,1,OK,0
     // STAT,1 -> STAT,1,RUN,0
     // EXTR,1,300 -> EXTR,1,300,0(300)
     // CLEAN,1 -> CLEAN,1,OK
@@ -53,10 +53,12 @@ void checkProtocol()
             {
                 int splitIdx2 = inputString.indexOf(",", splitIdx1+1);
                 int splitIdx3 = inputString.indexOf(",", splitIdx2+1);
+                int splitIdx4 = inputString.indexOf(",", splitIdx3+1);
 
                 String dosingPumpIdxStr = inputString.substring(splitIdx1+1, splitIdx2);
-                String nameStr = inputString.substring(splitIdx2+1, splitIdx3);
-                String doseAmountStr = inputString.substring(splitIdx3+1, inputString.length());
+                String userNameStr = inputString.substring(splitIdx2+1, splitIdx3);
+                String drugNameStr = inputString.substring(splitIdx3+1, splitIdx4);
+                String doseAmountStr = inputString.substring(splitIdx4+1, inputString.length());
 
                 unsigned int dosingPumpIdx = dosingPumpIdxStr.toInt()-1;
                 unsigned int doseAmount = doseAmountStr.toInt();
@@ -73,7 +75,7 @@ void checkProtocol()
                     {
                         dosingPump[dosingPumpIdx].setDoseAmount(doseAmount);
                         clearDisplay(dosingPumpIdx);
-                        drawDisplay(dosingPumpIdx, nameStr.c_str(), doseAmount);
+                        drawDisplay(dosingPumpIdx, userNameStr.c_str(), drugNameStr.c_str(), doseAmount);
                         errCode = 0;
                     }
                     sprintf(sendStr, "SET,%d,%s,%d\n", dosingPumpIdx+1, SYSTEM_STATUS_STR[errCode], errCode);
@@ -114,7 +116,7 @@ void checkProtocol()
                 {
                     dosingPump[dosingPumpIdx].setDoseAmount(doseAmount);
                     ledButton[dosingPumpIdx].blinkStart();
-                    drawWait(dosingPumpIdx);
+                    // drawWait(dosingPumpIdx);
                 }
             }
             else if(cmdStr.equals("CLEAN"))
@@ -127,9 +129,9 @@ void checkProtocol()
                 {
                     dosingPump[dosingPumpIdx].setDoseAmount(100);
                     clearDisplay(dosingPumpIdx);
-                    drawDisplay(dosingPumpIdx, "CLEAN", 100);
+                    drawDisplay(dosingPumpIdx, "CLEAN", "CLEAN", 100);
                     dosingPump[dosingPumpIdx].start();
-                    drawDone(dosingPumpIdx);
+                    // drawDone(dosingPumpIdx);
                     char sendStr[40] = {'\0',};
                     sprintf(sendStr, "CLEAN,%d,OK\n", dosingPumpIdx+1);
                     Serial.print(sendStr);
@@ -147,7 +149,7 @@ void checkButton()
         if(dosingPump[idx].getDoseStat() == Dosing::WAIT && ledButton[idx].isPushed())
         {
             dosingPump[idx].start();
-            drawExtr(idx);
+            // drawExtr(idx);
             char sendStr[40] = {'\0',};
             sprintf(sendStr, "EXTR,%d,0,%d\n", idx+1, dosingPump[idx].getDoseAmount());
             Serial.print(sendStr);
@@ -163,7 +165,7 @@ void checkDosingPump()
         if(dosingPump[idx].check() == Dosing::END)
         {
             dosingPump[idx].stop();
-            drawDone(idx);
+            // drawDone(idx);
             char sendStr[40] = {'\0',};
             sprintf(sendStr, "EXTR,%d,%d,%d\n", idx+1, dosingPump[idx].getDoseAmount(), dosingPump[idx].getDoseAmount());
             Serial.print(sendStr);

@@ -21,22 +21,25 @@ void initDisplays()
         TCA9548A(i);
         display.begin(SSD1306_SWITCHCAPVCC, 0x3C);        
         // display.clearDisplay();
-        drawDisplay(i, "", 0);
+        drawDisplay(i, "", "", 0);
         // display.display();
     }
 }
 
-void drawDisplay(unsigned int oledIdx, const char *name, unsigned int dose)
+void drawDisplay(unsigned int oledIdx, const char *userName, const char *drugName, unsigned int dose)
 {
     TCA9548A(oledIdx);
     display.clearDisplay();
-    // name: 
+    // User Name: 
     matrixPrint(0, 0, "이름:");
-    matrixPrint(42, 0, name);
-    // Dose:
+    matrixPrint(42, 0, userName);
+    // Dose Info:
     matrixPrint(0, 22, "용량:");
     matrixPrint(42, 22, String(dose).c_str());
     matrixPrint(80, 22, "ml");
+    // Drug Name:
+    matrixPrint(0, 43, "약물:");
+    matrixPrint(42, 43, drugName);
     display.display();
 }
 

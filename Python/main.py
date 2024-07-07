@@ -140,27 +140,27 @@ class MainWidget(QWidget):
 
     @pyqtSlot()
     def onSetButtonToggled(self):
-        # SET,1,홍길동,200 -> SET,1,OK,0
+        # SET,1,홍길동,타이레놀,200 -> SET,1,OK,0
         # STAT,1 -> STAT,1,RUN,0
         # EXTR,1,300 -> EXTR,1,300,0(300)
         # CLEAN,1 -> CLEAN,1,OK
         if self.out1Button.isChecked():
-            sendStr = 'SET,' + '1,' +  self.nameEdit.text() + ',' + str(self.outSpinBox.value()) + '\n'
+            sendStr = 'SET,' + '1,' +  self.nameEdit.text() + ',' + self.drugEdit.text() + ',' + str(self.outSpinBox.value()) + '\n'
         if self.out2Button.isChecked():
-            sendStr = 'SET,' + '2,' +  self.nameEdit.text() + ',' + str(self.outSpinBox.value()) + '\n'
+            sendStr = 'SET,' + '2,' +  self.nameEdit.text() + ',' + self.drugEdit.text() + ',' + str(self.outSpinBox.value()) + '\n'
         if self.out3Button.isChecked():
-            sendStr = 'SET,' + '3,' +  self.nameEdit.text() + ',' + str(self.outSpinBox.value()) + '\n'
+            sendStr = 'SET,' + '3,' +  self.nameEdit.text() + ',' + self.drugEdit.text() + ',' + str(self.outSpinBox.value()) + '\n'
         if self.out4Button.isChecked():
-            sendStr = 'SET,' + '4,' +  self.nameEdit.text() + ',' + str(self.outSpinBox.value()) + '\n'
+            sendStr = 'SET,' + '4,' +  self.nameEdit.text() + ',' + self.drugEdit.text() + ',' + str(self.outSpinBox.value()) + '\n'
         if self.out5Button.isChecked():
-            sendStr = 'SET,' + '5,' +  self.nameEdit.text() + ',' + str(self.outSpinBox.value()) + '\n'
+            sendStr = 'SET,' + '5,' +  self.nameEdit.text() + ',' + self.drugEdit.text() + ',' + str(self.outSpinBox.value()) + '\n'
         self.logEdit.append("[SEND] " + sendStr)
         self.logEdit.moveCursor(QTextCursor.End)
         self.ser.write(bytes(sendStr, 'utf-8'))
 
     @pyqtSlot()
     def onExtrButtonToggled(self):
-        # SET,1,홍길동,200 -> SET,1,OK,0
+        # SET,1,홍길동,타이레놀,200 -> SET,1,OK,0
         # STAT,1 -> STAT,1,RUN,0
         # EXTR,1,300 -> EXTR,1,300,0(300)
         # CLEAN,1 -> CLEAN,1,OK
