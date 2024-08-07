@@ -30,16 +30,17 @@ void drawDisplay(unsigned int oledIdx, const char *userName, const char *drugNam
 {
     TCA9548A(oledIdx);
     display.clearDisplay();
-    // User Name: 
-    matrixPrint(0, 0, "이름:");
-    matrixPrint(42, 0, userName);
-    // Dose Info:
-    matrixPrint(0, 22, "용량:");
-    matrixPrint(42, 22, String(dose).c_str());
-    matrixPrint(80, 22, "ml");
     // Drug Name:
-    matrixPrint(0, 43, "약물:");
-    matrixPrint(42, 43, drugName);
+    matrixPrint(0, 0, "약물:");
+    matrixPrint(42, 0, drugName);
+    // User Name: 
+    matrixPrint(0, 22, "이름:");
+    matrixPrint(42, 22, userName);
+    // Dose Info:
+    matrixPrint(0, 43, "용량:");
+    matrixPrint(42, 43, String(dose).c_str());
+    matrixPrint(80, 43, "ml");
+
     display.display();
 }
 
