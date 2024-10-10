@@ -29,13 +29,18 @@ unsigned int Dosing::getDoseStat()
 void Dosing::setDoseAmount(unsigned int _doseAmount)
 {
     doseAmount = _doseAmount;
-    doseTime = (float)doseAmount / milliliterPerMs;
     doseStat = WAIT;
+}
+
+void Dosing::setDoseWeight(float _doseWeight)
+{
+    doseWeight = _doseWeight;
 }
 
 void Dosing::start()
 {
     digitalWrite(pin, HIGH);
+    doseTime = ((float)doseAmount * doseWeight) / milliliterPerMs;
     bgnTime = millis();
     doseStat = RUN; // RUN
 }
@@ -49,7 +54,7 @@ void Dosing::startManual()
 
 unsigned int Dosing::check()
 {
-    if(doseStat == 1) // RUN
+    if(doseStat == RUN) // RUN
     {
         endTime = millis();
         if(doseTime < (endTime - bgnTime))

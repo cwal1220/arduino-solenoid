@@ -10,6 +10,7 @@ public:
     unsigned int getDoseAmount();
     unsigned int getDoseStat();
     void setDoseAmount(unsigned int _amount);
+    void setDoseWeight(float _doseWeight);
     void start();
     void startManual();
     unsigned int check();
@@ -24,6 +25,7 @@ private:
     unsigned char pin;
     float milliliterPerMs = 0.0333333;
     unsigned int doseAmount = 0;
+    float doseWeight = 1.0;
     unsigned int doseTime = 0;
     unsigned long bgnTime = 0;
     unsigned long endTime = 0;

@@ -54,14 +54,17 @@ void checkProtocol()
                 int splitIdx2 = inputString.indexOf(",", splitIdx1+1);
                 int splitIdx3 = inputString.indexOf(",", splitIdx2+1);
                 int splitIdx4 = inputString.indexOf(",", splitIdx3+1);
+                int splitIdx5 = inputString.indexOf(",", splitIdx4+1);
 
                 String dosingPumpIdxStr = inputString.substring(splitIdx1+1, splitIdx2);
                 String userNameStr = inputString.substring(splitIdx2+1, splitIdx3);
                 String drugNameStr = inputString.substring(splitIdx3+1, splitIdx4);
-                String doseAmountStr = inputString.substring(splitIdx4+1, inputString.length());
+                String doseAmountStr = inputString.substring(splitIdx4+1, splitIdx5);
+                String doseWeightStr = inputString.substring(splitIdx5+1, inputString.length());
 
                 unsigned int dosingPumpIdx = dosingPumpIdxStr.toInt()-1;
                 unsigned int doseAmount = doseAmountStr.toInt();
+                float doseWeight = doseWeightStr.toFloat();
 
                 if(dosingPumpIdx < 5)
                 {
@@ -74,6 +77,7 @@ void checkProtocol()
                     else
                     {
                         dosingPump[dosingPumpIdx].setDoseAmount(doseAmount);
+                        dosingPump[dosingPumpIdx].setDoseWeight(doseWeight);
                         clearDisplay(dosingPumpIdx);
                         drawDisplay(dosingPumpIdx, userNameStr.c_str(), drugNameStr.c_str(), doseAmount);
                         errCode = 0;
@@ -114,7 +118,7 @@ void checkProtocol()
 
                 if(dosingPumpIdx < SENSOR_NUM)
                 {
-                    dosingPump[dosingPumpIdx].setDoseAmount(doseAmount);
+                    // dosingPump[dosingPumpIdx].setDoseAmount(doseAmount);
                     ledButton[dosingPumpIdx].blinkStart();
                     // drawWait(dosingPumpIdx);
                 }
@@ -128,6 +132,7 @@ void checkProtocol()
                 if(dosingPumpIdx < SENSOR_NUM)
                 {
                     dosingPump[dosingPumpIdx].setDoseAmount(100);
+                    dosingPump[dosingPumpIdx].setDoseWeight(1.0);
                     clearDisplay(dosingPumpIdx);
                     drawDisplay(dosingPumpIdx, "CLEAN", "CLEAN", 100);
                     dosingPump[dosingPumpIdx].start();
