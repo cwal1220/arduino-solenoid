@@ -13,6 +13,7 @@ public:
     void start();
     void startManual();
     unsigned int check();
+    void wait();
     void stop();
 
     static const unsigned int WAIT = 0;
@@ -22,7 +23,7 @@ public:
     static const unsigned int MANUAL = 4;
 private:
     unsigned char pin;
-    float milliliterPerMs = 0.0333333;
+    float milliliterPerMs = 0.016566633;
     unsigned int doseAmount = 0;
     unsigned int doseTime = 0;
     unsigned long bgnTime = 0;
