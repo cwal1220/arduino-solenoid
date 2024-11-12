@@ -16,10 +16,11 @@ void TCA9548A(uint8_t bus)
 void initDisplays()
 {
     Wire.begin();
+    Wire.setWireTimeout(100000, true); // I2C Timeout Set, 100ms
     for (int i = 0; i < 5; i++)
     {
         TCA9548A(i);
-        display.begin(SSD1306_SWITCHCAPVCC, 0x3C);        
+        display.begin(SSD1306_SWITCHCAPVCC, 0x3C);
         // display.clearDisplay();
         drawDisplay(i, "", "", 0);
         // display.display();
@@ -30,7 +31,8 @@ void drawDisplay(unsigned int oledIdx, const char *userName, const char *drugNam
 {
     TCA9548A(oledIdx);
     display.clearDisplay();
-    // User Name: 
+
+    // User Name:
     matrixPrint(0, 0, "이름:");
     matrixPrint(42, 0, userName);
     // Dose Info:

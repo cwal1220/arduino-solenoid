@@ -30,7 +30,7 @@ void Dosing::setDoseAmount(unsigned int _doseAmount)
 {
     doseAmount = _doseAmount;
     doseTime = (float)doseAmount / milliliterPerMs;
-    doseStat = WAIT;
+    // doseStat = WAIT;
 }
 
 void Dosing::start()
@@ -63,6 +63,11 @@ unsigned int Dosing::check()
     }
 
     return doseStat;
+}
+
+void Dosing::wait()
+{
+    doseStat = WAIT;
 }
 
 void Dosing::stop()

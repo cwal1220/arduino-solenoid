@@ -3,10 +3,16 @@
 #include "Dosing.h"
 #include "Button.h"
 #include "FloatSensor.h"
+#include <avr/wdt.h>
 
 Dosing dosingPump[5];
 Button ledButton[5];
 FloatSensor floatSensor[5];
+
+int8_t Timer_Flag = 0;
+int8_t Timer_Toggle_Flag = 0;
+const int8_t AliveLedPin = 51;
+int8_t Dosing_Extr_Cmd[5];
 
 String inputString;
 char* DOSING_STATUS_STR[3] = {"WAIT", "RUN", "STOP"};
@@ -33,6 +39,8 @@ const int BUTTON_PUSH_PIN[SENSOR_NUM] = {37, 36, 35, 34, 33}; // Faduino
 // const int FLOAT_SENSOR_PIN[SENSOR_NUM] = {7, 8, 9, 10, 11}; // Arduino Mega
 const int FLOAT_SENSOR_PIN[SENSOR_NUM] = {32, 31, 30, 29, 28}; // Faduino
 
+const int BUTTON_EMERGENCY_PIN = 31;
+
 void checkProtocol()
 {
     // SET,1,홍길동,타이레놀,200 -> SET,1,OK,0
@@ -43,12 +51,12 @@ void checkProtocol()
     // Check Protocol
     if (Serial.available())
     {
-        char inChar = (char)Serial.read(); // 입력된 문자 읽기
+        char inChar = (char)Serial.read(); // 입력된 문자 읽기 check return VALUE TYPE
         inputString += inChar;             // 문자열에 추가
         if (inChar == '\n')                // 사용자가 Enter를 입력했을 경우
         {
             int splitIdx1 = inputString.indexOf(",");
-            String cmdStr = inputString.substring(0, splitIdx1);
+            String cmdStr = inputString.substring(0, splitIdx1); //STRING은 문자열을 다루는 클래스, cmdstr-command string
             if(cmdStr.equals("SET"))
             {
                 int splitIdx2 = inputString.indexOf(",", splitIdx1+1);
@@ -98,7 +106,7 @@ void checkProtocol()
                 {
                     unsigned int dosingPumpStat = dosingPump[dosingPumpIdx].getDoseStat();
                     char sendStr[40] = {'\0',};
-                    sprintf(sendStr, "STAT,%d,%s,0\n", dosingPumpIdx+1, DOSING_STATUS_STR[dosingPumpStat]);
+                    sprintf(sendStr, "STAT,%d,%s,%d\n", dosingPumpIdx+1, DOSING_STATUS_STR[dosingPumpStat], Dosing_Extr_Cmd[dosingPumpIdx]);
                     Serial.print(sendStr);
                 }
             }
@@ -115,7 +123,9 @@ void checkProtocol()
                 if(dosingPumpIdx < SENSOR_NUM)
                 {
                     dosingPump[dosingPumpIdx].setDoseAmount(doseAmount);
+                    dosingPump[dosingPumpIdx].wait();
                     ledButton[dosingPumpIdx].blinkStart();
+                    Dosing_Extr_Cmd[dosingPumpIdx] = 1;
                     // drawWait(dosingPumpIdx);
                 }
             }
@@ -148,12 +158,16 @@ void checkButton()
     {
         if(dosingPump[idx].getDoseStat() == Dosing::WAIT && ledButton[idx].isPushed())
         {
-            dosingPump[idx].start();
-            // drawExtr(idx);
-            char sendStr[40] = {'\0',};
-            sprintf(sendStr, "EXTR,%d,0,%d\n", idx+1, dosingPump[idx].getDoseAmount());
-            Serial.print(sendStr);
-            ledButton[idx].blinkStop();
+            if(Dosing_Extr_Cmd[idx] == 1)
+            {
+                dosingPump[idx].start();
+                // drawExtr(idx);
+                char sendStr[40] = {'\0',};
+                sprintf(sendStr, "EXTR,%d,0,%d\n", idx+1, dosingPump[idx].getDoseAmount());
+                Serial.print(sendStr);
+                ledButton[idx].blinkStop();
+                ledButton[idx].setLedState(HIGH);
+            }
         }
     }
 }
@@ -165,10 +179,18 @@ void checkDosingPump()
         if(dosingPump[idx].check() == Dosing::END)
         {
             dosingPump[idx].stop();
+            ledButton[idx].setLedState(LOW);
             // drawDone(idx);
             char sendStr[40] = {'\0',};
             sprintf(sendStr, "EXTR,%d,%d,%d\n", idx+1, dosingPump[idx].getDoseAmount(), dosingPump[idx].getDoseAmount());
             Serial.print(sendStr);
+        }
+        else if(dosingPump[idx].check() == Dosing::STOP)
+        {
+            if( (Dosing_Extr_Cmd[idx] == 1) && (ledButton[idx].isPushed()==0) )
+            {
+                Dosing_Extr_Cmd[idx] = 0;
+            }
         }
     }
 }
@@ -177,26 +199,51 @@ void checkManualMode()
 {
     for(int idx=0; idx<SENSOR_NUM; idx++)
     {
-        if(dosingPump[idx].getDoseStat() == Dosing::STOP && ledButton[idx].isPushed())
+        if(Dosing_Extr_Cmd[idx] == 0)
         {
-            ledButton[idx].setLedState(HIGH);
-            dosingPump[idx].startManual();
+            if(dosingPump[idx].getDoseStat() == Dosing::STOP && ledButton[idx].isPushed())
+            {
+                ledButton[idx].setLedState(HIGH);
+                dosingPump[idx].startManual();
+            }
+            else if(dosingPump[idx].getDoseStat() == Dosing::MANUAL && !ledButton[idx].isPushed())
+            {
+                ledButton[idx].setLedState(LOW);
+                dosingPump[idx].stop();
+           }
         }
-        else if(dosingPump[idx].getDoseStat() == Dosing::MANUAL && !ledButton[idx].isPushed())
+    }
+}
+
+void checkEmergency()
+{
+    if(digitalRead(BUTTON_EMERGENCY_PIN))
+    {
+        for(int idx=0; idx<SENSOR_NUM; idx++)
         {
-            ledButton[idx].setLedState(LOW);
             dosingPump[idx].stop();
+            ledButton[idx].blinkStop();
+            ledButton[idx].setLedState(LOW);
+        }
+        // LCD 초기화 시간이 느리기 때문에 별도의 loop로 분리
+        for(int idx=0; idx<SENSOR_NUM; idx++)
+        {
+            drawDisplay(idx, "", "", 0);
         }
     }
 }
 
 void ledTimerISR()
 {
+    // Timer Flag
+    Timer_Flag = 1;
+    Timer_Toggle_Flag = !Timer_Toggle_Flag;
+
     for(int idx=0; idx<SENSOR_NUM; idx++)
     {
         if(ledButton[idx].getBlinkStarted())
         {
-            ledButton[idx].setLedState(!ledButton[idx].getLedState());
+            ledButton[idx].setLedState(Timer_Toggle_Flag);
         }
     }
 }
@@ -210,9 +257,19 @@ void setup()
         dosingPump[idx].initPin(DOSING_PUMP_PIN[idx]);
         ledButton[idx].initPin(BUTTON_PUSH_PIN[idx], BUTTON_LED_PIN[idx]);
         floatSensor[idx].initPin(FLOAT_SENSOR_PIN[idx]);
+        Dosing_Extr_Cmd[idx] = 0;
     }
+
+    // Use for Alive_LED
+    pinMode(AliveLedPin, OUTPUT);
+    // Use Emergency Button
+    pinMode(BUTTON_EMERGENCY_PIN, INPUT_PULLUP);
+
     MsTimer2::set(500, ledTimerISR);
     MsTimer2::start();
+
+    //Enable Watchdog
+    wdt_enable(WDTO_8S);
 }
 
 void loop()
@@ -228,6 +285,20 @@ void loop()
 
     // Check Manual Mode
     checkManualMode();
+
+    // Check Emergency Condition
+    checkEmergency();
+
+    // Timer Flag
+    if(Timer_Flag)
+    {
+        Timer_Flag = 0;
+        // Alive LED
+        digitalWrite(AliveLedPin, !(digitalRead(AliveLedPin)));
+
+        //clear watchdog timeout
+        wdt_reset();
+    }
 
     yield;
 }
