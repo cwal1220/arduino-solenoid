@@ -35,11 +35,13 @@ const int BUTTON_LED_PIN[SENSOR_NUM] = {38, 39, 40, 41, 42}; // Faduino
 // const int BUTTON_PUSH_PIN[SENSOR_NUM] = {30, 32, 34, 36, 38}; // Arduino Mega
 const int BUTTON_PUSH_PIN[SENSOR_NUM] = {37, 36, 35, 34, 33}; // Faduino
 
+// Define Emergency Input PINs: INPUT
+const int BUTTON_EMERGENCY_PIN[SENSOR_NUM] = {26, 25, 24, 23, 22};
+
 // Define Float Sensor Input PINs: INPUT
 // const int FLOAT_SENSOR_PIN[SENSOR_NUM] = {7, 8, 9, 10, 11}; // Arduino Mega
 const int FLOAT_SENSOR_PIN[SENSOR_NUM] = {32, 31, 30, 29, 28}; // Faduino
 
-const int BUTTON_EMERGENCY_PIN = 31;
 
 void checkProtocol()
 {
@@ -217,17 +219,24 @@ void checkManualMode()
 
 void checkEmergency()
 {
-    if(digitalRead(BUTTON_EMERGENCY_PIN))
+    for(int idx=0; idx<SENSOR_NUM; idx++)
     {
-        for(int idx=0; idx<SENSOR_NUM; idx++)
+        if(digitalRead(BUTTON_EMERGENCY_PIN[idx]))
         {
+            // 대기중(SET)이거나 추출대기중(EXTR)이거나, 추출중(RUN)인 경우에 비상정지 버튼을 누르는 경우
+            if( dosingPump[idx].getDoseStat() == Dosing::SET ||
+                dosingPump[idx].getDoseStat() == Dosing::WAIT || 
+                dosingPump[idx].getDoseStat() == Dosing::RUN)
+            {
+                // 완료메세지 전송
+                char sendStr[40] = {'\0',};
+                sprintf(sendStr, "EXTR,%d,%d,%d\n", idx+1, dosingPump[idx].getDoseAmount(), dosingPump[idx].getDoseAmount());
+                Serial.print(sendStr);
+            }
+            
             dosingPump[idx].stop();
             ledButton[idx].blinkStop();
             ledButton[idx].setLedState(LOW);
-        }
-        // LCD 초기화 시간이 느리기 때문에 별도의 loop로 분리
-        for(int idx=0; idx<SENSOR_NUM; idx++)
-        {
             drawDisplay(idx, "", "", 0);
         }
     }
@@ -257,13 +266,13 @@ void setup()
         dosingPump[idx].initPin(DOSING_PUMP_PIN[idx]);
         ledButton[idx].initPin(BUTTON_PUSH_PIN[idx], BUTTON_LED_PIN[idx]);
         floatSensor[idx].initPin(FLOAT_SENSOR_PIN[idx]);
+        // Use Emergency Button
+        pinMode(BUTTON_EMERGENCY_PIN[idx], INPUT_PULLUP);
         Dosing_Extr_Cmd[idx] = 0;
     }
 
     // Use for Alive_LED
     pinMode(AliveLedPin, OUTPUT);
-    // Use Emergency Button
-    pinMode(BUTTON_EMERGENCY_PIN, INPUT_PULLUP);
 
     MsTimer2::set(500, ledTimerISR);
     MsTimer2::start();
