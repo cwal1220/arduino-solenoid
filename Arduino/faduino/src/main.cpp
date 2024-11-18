@@ -228,8 +228,16 @@ void checkEmergency()
                 dosingPump[idx].getDoseStat() == Dosing::WAIT || 
                 dosingPump[idx].getDoseStat() == Dosing::RUN)
             {
-                // 완료메세지 전송
                 char sendStr[40] = {'\0',};
+
+                // 대기중(SET)이거나 추출대기중(EXTR) 상태(버튼을 누르지 않은 상태)이면, 시작한 것으로 인식하도록 명령을 전달함
+                if( dosingPump[idx].getDoseStat() == Dosing::SET ||
+                    dosingPump[idx].getDoseStat() == Dosing::WAIT)
+                {
+                    sprintf(sendStr, "EXTR,%d,0,%d\n", idx+1, dosingPump[idx].getDoseAmount());
+                    Serial.print(sendStr);
+                }
+                // 완료메세지 전송
                 sprintf(sendStr, "EXTR,%d,%d,%d\n", idx+1, dosingPump[idx].getDoseAmount(), dosingPump[idx].getDoseAmount());
                 Serial.print(sendStr);
             }
