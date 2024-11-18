@@ -49,7 +49,7 @@ void Dosing::startManual()
 
 unsigned int Dosing::check()
 {
-    if(doseStat == 1) // RUN
+    if(doseStat == RUN) // RUN
     {
         endTime = millis();
         if(doseTime < (endTime - bgnTime))
