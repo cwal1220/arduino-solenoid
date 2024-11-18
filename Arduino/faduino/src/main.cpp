@@ -236,6 +236,8 @@ void checkEmergency()
                 {
                     sprintf(sendStr, "EXTR,%d,0,%d\n", idx+1, dosingPump[idx].getDoseAmount());
                     Serial.print(sendStr);
+                    // TODO: Fine tuning
+                    delay(1000*2);
                 }
                 // 완료메세지 전송
                 sprintf(sendStr, "EXTR,%d,%d,%d\n", idx+1, dosingPump[idx].getDoseAmount(), dosingPump[idx].getDoseAmount());
