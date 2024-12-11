@@ -14,16 +14,18 @@ public:
     void start();
     void startManual();
     unsigned int check();
+    void wait();
     void stop();
 
-    static const unsigned int WAIT = 0;
-    static const unsigned int RUN = 1;
-    static const unsigned int STOP = 2;
-    static const unsigned int END = 3;
-    static const unsigned int MANUAL = 4;
+    static const unsigned int STOP = 0;
+    static const unsigned int SET = 1;
+    static const unsigned int WAIT = 2;
+    static const unsigned int RUN = 3;
+    static const unsigned int END = 4;
+    static const unsigned int MANUAL = 5;
 private:
     unsigned char pin;
-    float milliliterPerMs = 0.0333333;
+    float milliliterPerMs = 0.016566633;
     unsigned int doseAmount = 0;
     float doseWeight = 1.0;
     unsigned int doseTime = 0;

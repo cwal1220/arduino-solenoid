@@ -9,6 +9,7 @@ void Dosing::initPin(unsigned char _pin)
 {
     pin = _pin;
     pinMode(pin, OUTPUT);
+    digitalWrite(pin, HIGH);
 }
 
 void Dosing::setMililiterPerMs(float _milliliterPerMs)
@@ -29,7 +30,8 @@ unsigned int Dosing::getDoseStat()
 void Dosing::setDoseAmount(unsigned int _doseAmount)
 {
     doseAmount = _doseAmount;
-    doseStat = WAIT;
+    doseTime = (float)doseAmount / milliliterPerMs;
+    doseStat = SET;
 }
 
 void Dosing::setDoseWeight(float _doseWeight)
@@ -39,7 +41,7 @@ void Dosing::setDoseWeight(float _doseWeight)
 
 void Dosing::start()
 {
-    digitalWrite(pin, HIGH);
+    digitalWrite(pin, LOW);
     doseTime = ((float)doseAmount * doseWeight) / milliliterPerMs;
     bgnTime = millis();
     doseStat = RUN; // RUN
@@ -47,7 +49,7 @@ void Dosing::start()
 
 void Dosing::startManual()
 {
-    digitalWrite(pin, HIGH);
+    digitalWrite(pin, LOW);
     doseStat = MANUAL;
 }
 
@@ -70,9 +72,14 @@ unsigned int Dosing::check()
     return doseStat;
 }
 
+void Dosing::wait()
+{
+    doseStat = WAIT;
+}
+
 void Dosing::stop()
 {
-    digitalWrite(pin, LOW);
+    digitalWrite(pin, HIGH);
     bgnTime = 0;
     endTime = 0;
     doseTime = 0;

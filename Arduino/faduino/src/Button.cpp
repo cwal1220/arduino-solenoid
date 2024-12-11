@@ -11,6 +11,7 @@ void Button::initPin(unsigned char _buttonPin, unsigned char _ledPin)
     ledPin = _ledPin;
     pinMode(buttonPin, INPUT_PULLUP);
     pinMode(ledPin, OUTPUT);
+    digitalWrite(ledPin, HIGH);
 }
 
 bool Button::isPushed()
@@ -21,7 +22,7 @@ bool Button::isPushed()
 void Button::setLedState(unsigned char _ledState)
 {
     ledState = _ledState;
-    digitalWrite(ledPin, ledState);
+    digitalWrite(ledPin, !ledState);
 }
 
 unsigned char Button::getLedState()
