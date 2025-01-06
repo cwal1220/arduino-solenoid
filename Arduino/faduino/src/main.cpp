@@ -64,13 +64,11 @@ void checkProtocol()
                 int splitIdx2 = inputString.indexOf(",", splitIdx1+1);
                 int splitIdx3 = inputString.indexOf(",", splitIdx2+1);
                 int splitIdx4 = inputString.indexOf(",", splitIdx3+1);
-                int splitIdx5 = inputString.indexOf(",", splitIdx4+1);
 
                 String dosingPumpIdxStr = inputString.substring(splitIdx1+1, splitIdx2);
                 String userNameStr = inputString.substring(splitIdx2+1, splitIdx3);
-                String drugNameStr = inputString.substring(splitIdx3+1, splitIdx4);
-                String doseAmountStr = inputString.substring(splitIdx4+1, splitIdx5);
-                String doseWeightStr = inputString.substring(splitIdx5+1, inputString.length());
+                String doseAmountStr = inputString.substring(splitIdx3+1, splitIdx4);
+                String doseWeightStr = inputString.substring(splitIdx4+1, inputString.length());
 
                 unsigned int dosingPumpIdx = dosingPumpIdxStr.toInt()-1;
                 unsigned int doseAmount = doseAmountStr.toInt();
@@ -89,7 +87,7 @@ void checkProtocol()
                         dosingPump[dosingPumpIdx].setDoseAmount(doseAmount);
                         dosingPump[dosingPumpIdx].setDoseWeight(doseWeight);
                         clearDisplay(dosingPumpIdx);
-                        drawDisplay(dosingPumpIdx, userNameStr.c_str(), drugNameStr.c_str(), doseAmount);
+                        drawDisplay(dosingPumpIdx, userNameStr.c_str(), "", doseAmount);
                         errCode = 0;
                     }
                     sprintf(sendStr, "SET,%d,%s,%d\n", dosingPumpIdx+1, SYSTEM_STATUS_STR[errCode], errCode);
