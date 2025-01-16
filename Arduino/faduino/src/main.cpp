@@ -45,7 +45,7 @@ const int FLOAT_SENSOR_PIN[SENSOR_NUM] = {32, 31, 30, 29, 28}; // Faduino
 
 void checkProtocol()
 {
-    // SET,1,홍길동,타이레놀,200 -> SET,1,OK,0
+    // SET,1,홍길동,200 -> SET,1,OK,0
     // STAT,1 -> STAT,1,RUN,0
     // EXTR,1,300 -> EXTR,1,300,0(300)
     // CLEAN,1 -> CLEAN,1,OK
