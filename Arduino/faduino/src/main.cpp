@@ -25,7 +25,7 @@ const int SENSOR_NUM = 5;
 
 // Define Dosing Pump PINs: OUTPUT
 // const int DOSING_PUMP_PIN[SENSOR_NUM] = {2, 3, 4, 5, 6}; // Arduino Mega
-const int DOSING_PUMP_PIN[SENSOR_NUM] = {43, 44, 45, 46, 47}; // Faduino
+const int DOSING_PUMP_PIN[SENSOR_NUM] = {6, 7, 8, 9, 10}; // Faduino
 
 // Define Button LED PINs: OUTPUT
 // const int BUTTON_LED_PIN[SENSOR_NUM] = {31, 33, 35, 37, 39}; // Arduino Mega
@@ -179,6 +179,27 @@ void checkButton()
 
 void checkDosingPump()
 {
+    if(dosingPump[0].getDoseStat() == Dosing::RUN || dosingPump[0].getDoseStat() == Dosing::MANUAL ||
+       dosingPump[1].getDoseStat() == Dosing::RUN || dosingPump[1].getDoseStat() == Dosing::MANUAL ||
+       dosingPump[2].getDoseStat() == Dosing::RUN || dosingPump[2].getDoseStat() == Dosing::MANUAL || 
+       dosingPump[3].getDoseStat() == Dosing::RUN || dosingPump[3].getDoseStat() == Dosing::MANUAL ||
+       dosingPump[4].getDoseStat() == Dosing::RUN || dosingPump[4].getDoseStat() == Dosing::MANUAL)
+    {
+        dosingPump[0].upPulse();
+        dosingPump[1].upPulse();
+        dosingPump[2].upPulse();
+        dosingPump[3].upPulse();
+        dosingPump[4].upPulse();
+        delayMicroseconds(500);
+        dosingPump[0].downPulse();
+        dosingPump[1].downPulse();
+        dosingPump[2].downPulse();
+        dosingPump[3].downPulse();
+        dosingPump[4].downPulse();
+        delayMicroseconds(500);
+    }
+
+
     for(int idx=0; idx<SENSOR_NUM; idx++)
     {
         if(dosingPump[idx].check() == Dosing::END)
@@ -321,6 +342,4 @@ void loop()
         //clear watchdog timeout
         wdt_reset();
     }
-
-    yield;
 }

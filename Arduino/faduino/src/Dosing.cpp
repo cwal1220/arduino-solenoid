@@ -12,11 +12,6 @@ void Dosing::initPin(unsigned char _pin)
     digitalWrite(pin, HIGH);
 }
 
-void Dosing::setMililiterPerMs(float _milliliterPerMs)
-{
-    milliliterPerMs = _milliliterPerMs;
-}
-
 unsigned int Dosing::getDoseAmount()
 {
     return doseAmount;
@@ -30,7 +25,7 @@ unsigned int Dosing::getDoseStat()
 void Dosing::setDoseAmount(unsigned int _doseAmount)
 {
     doseAmount = _doseAmount;
-    doseTime = (float)doseAmount / milliliterPerMs;
+    doseCnt = (float)doseAmount * doseWeight * milliliterPerPulse;
     doseStat = SET;
 }
 
@@ -39,29 +34,41 @@ void Dosing::setDoseWeight(float _doseWeight)
     doseWeight = _doseWeight;
 }
 
+void Dosing::upPulse()
+{
+    if(doseStat == RUN || doseStat == MANUAL) // RUN
+    {
+        digitalWrite(pin, HIGH);
+    }
+}
+
+void Dosing::downPulse()
+{
+    if(doseStat == RUN || doseStat == MANUAL) // RUN
+    {
+        digitalWrite(pin, LOW);
+    }
+}
+
 void Dosing::start()
 {
-    digitalWrite(pin, LOW);
-    doseTime = ((float)doseAmount * doseWeight) / milliliterPerMs;
-    bgnTime = millis();
+    doseCnt = (float)doseAmount * doseWeight * milliliterPerPulse;
     doseStat = RUN; // RUN
 }
 
 void Dosing::startManual()
 {
-    digitalWrite(pin, LOW);
     doseStat = MANUAL;
 }
-
 
 unsigned int Dosing::check()
 {
     if(doseStat == RUN) // RUN
     {
-        endTime = millis();
-        if(doseTime < (endTime - bgnTime))
+        doseCnt--;
+        if(doseCnt <= 0)
         {
-            doseStat = END; // 시간이 다 되면 END
+            doseStat = END; // 다 되면 END
         }
         else
         {
@@ -79,9 +86,6 @@ void Dosing::wait()
 
 void Dosing::stop()
 {
-    digitalWrite(pin, HIGH);
-    bgnTime = 0;
-    endTime = 0;
-    doseTime = 0;
+    doseCnt = 0;
     doseStat = STOP;
 }
