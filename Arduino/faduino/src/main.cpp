@@ -40,7 +40,7 @@ const int BUTTON_EMERGENCY_PIN[SENSOR_NUM] = {26, 25, 24, 23, 22};
 // const int BUTTON_MANUAL_PIN[SENSOR_NUM] = {7, 8, 9, 10, 11}; // Arduino Mega
 const int BUTTON_MANUAL_PIN[SENSOR_NUM] = {32, 31, 30, 29, 28}; // Faduino
 
-const int DOSING_PUMP_ENABLE_PIN = 11;
+const int DOSING_PUMP_ENABLE_PIN[SENSOR_NUM] = {43, 44, 45, 46, 47};
 
 void checkProtocol()
 {
@@ -173,13 +173,17 @@ void checkButton()
 
 void checkDosingPump()
 {
+    for(int idx=0; idx<SENSOR_NUM; idx++)
+    {
+        digitalWrite(DOSING_PUMP_ENABLE_PIN[idx], dosingPump[idx].getDoseStat() == Dosing::RUN || dosingPump[idx].getDoseStat() == Dosing::MANUAL);
+    }
+
     if(dosingPump[0].getDoseStat() == Dosing::RUN || dosingPump[0].getDoseStat() == Dosing::MANUAL ||
        dosingPump[1].getDoseStat() == Dosing::RUN || dosingPump[1].getDoseStat() == Dosing::MANUAL ||
        dosingPump[2].getDoseStat() == Dosing::RUN || dosingPump[2].getDoseStat() == Dosing::MANUAL || 
        dosingPump[3].getDoseStat() == Dosing::RUN || dosingPump[3].getDoseStat() == Dosing::MANUAL ||
        dosingPump[4].getDoseStat() == Dosing::RUN || dosingPump[4].getDoseStat() == Dosing::MANUAL)
     {
-        digitalWrite(DOSING_PUMP_ENABLE_PIN, HIGH);
         dosingPump[0].upPulse();
         dosingPump[1].upPulse();
         dosingPump[2].upPulse();
@@ -192,10 +196,6 @@ void checkDosingPump()
         dosingPump[3].downPulse();
         dosingPump[4].downPulse();
         delayMicroseconds(500);
-    }
-    else
-    {
-        digitalWrite(DOSING_PUMP_ENABLE_PIN, LOW);
     }
 
 
@@ -301,7 +301,7 @@ void setup()
         // Use Manual Button
         pinMode(BUTTON_MANUAL_PIN[idx], INPUT_PULLUP);
         // TODO: Enable pin
-        pinMode(DOSING_PUMP_ENABLE_PIN, OUTPUT);
+        pinMode(DOSING_PUMP_ENABLE_PIN[idx], OUTPUT);
         Dosing_Extr_Cmd[idx] = 0;
     }
 
