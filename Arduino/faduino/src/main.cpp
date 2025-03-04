@@ -2,12 +2,10 @@
 #include "OLED.h"
 #include "Dosing.h"
 #include "Button.h"
-#include "FloatSensor.h"
 #include <avr/wdt.h>
 
 Dosing dosingPump[5];
 Button ledButton[5];
-FloatSensor floatSensor[5];
 
 int8_t Timer_Flag = 0;
 int8_t Timer_Toggle_Flag = 0;
@@ -38,10 +36,11 @@ const int BUTTON_PUSH_PIN[SENSOR_NUM] = {37, 36, 35, 34, 33}; // Faduino
 // Define Emergency Input PINs: INPUT
 const int BUTTON_EMERGENCY_PIN[SENSOR_NUM] = {26, 25, 24, 23, 22};
 
-// Define Float Sensor Input PINs: INPUT
-// const int FLOAT_SENSOR_PIN[SENSOR_NUM] = {7, 8, 9, 10, 11}; // Arduino Mega
-const int FLOAT_SENSOR_PIN[SENSOR_NUM] = {32, 31, 30, 29, 28}; // Faduino
+// Define Manual Input PINs: INPUT
+// const int BUTTON_MANUAL_PIN[SENSOR_NUM] = {7, 8, 9, 10, 11}; // Arduino Mega
+const int BUTTON_MANUAL_PIN[SENSOR_NUM] = {32, 31, 30, 29, 28}; // Faduino
 
+const int DOSING_PUMP_ENABLE_PIN = 11;
 
 void checkProtocol()
 {
@@ -80,18 +79,11 @@ void checkProtocol()
                 {
                     char sendStr[40] = {'\0',};
                     unsigned char errCode;
-                    if(floatSensor[dosingPumpIdx].isEmpty())
-                    {
-                        errCode = 1;
-                    }
-                    else
-                    {
-                        dosingPump[dosingPumpIdx].setDoseAmount(doseAmount);
-                        dosingPump[dosingPumpIdx].setDoseWeight(doseWeight);
-                        clearDisplay(dosingPumpIdx);
-                        drawDisplay(dosingPumpIdx, userNameStr.c_str(), drugNameStr.c_str(), doseAmount);
-                        errCode = 0;
-                    }
+                    dosingPump[dosingPumpIdx].setDoseAmount(doseAmount);
+                    dosingPump[dosingPumpIdx].setDoseWeight(doseWeight);
+                    clearDisplay(dosingPumpIdx);
+                    drawDisplay(dosingPumpIdx, userNameStr.c_str(), drugNameStr.c_str(), doseAmount);
+                    errCode = 0;
                     sprintf(sendStr, "SET,%d,%s,%d\n", dosingPumpIdx+1, SYSTEM_STATUS_STR[errCode], errCode);
                     Serial.print(sendStr);
                 }
@@ -187,6 +179,7 @@ void checkDosingPump()
        dosingPump[3].getDoseStat() == Dosing::RUN || dosingPump[3].getDoseStat() == Dosing::MANUAL ||
        dosingPump[4].getDoseStat() == Dosing::RUN || dosingPump[4].getDoseStat() == Dosing::MANUAL)
     {
+        digitalWrite(DOSING_PUMP_ENABLE_PIN, HIGH);
         dosingPump[0].upPulse();
         dosingPump[1].upPulse();
         dosingPump[2].upPulse();
@@ -199,6 +192,10 @@ void checkDosingPump()
         dosingPump[3].downPulse();
         dosingPump[4].downPulse();
         delayMicroseconds(500);
+    }
+    else
+    {
+        digitalWrite(DOSING_PUMP_ENABLE_PIN, LOW);
     }
 
 
@@ -229,14 +226,12 @@ void checkManualMode()
     {
         if(Dosing_Extr_Cmd[idx] == 0)
         {
-            if(dosingPump[idx].getDoseStat() == Dosing::STOP && ledButton[idx].isPushed())
+            if(dosingPump[idx].getDoseStat() == Dosing::STOP && digitalRead(BUTTON_MANUAL_PIN[idx]))
             {
-                ledButton[idx].setLedState(HIGH);
                 dosingPump[idx].startManual();
             }
-            else if(dosingPump[idx].getDoseStat() == Dosing::MANUAL && !ledButton[idx].isPushed())
+            else if(dosingPump[idx].getDoseStat() == Dosing::MANUAL && !digitalRead(BUTTON_MANUAL_PIN[idx]))
             {
-                ledButton[idx].setLedState(LOW);
                 dosingPump[idx].stop();
            }
         }
@@ -301,9 +296,12 @@ void setup()
     {
         dosingPump[idx].initPin(DOSING_PUMP_PIN[idx]);
         ledButton[idx].initPin(BUTTON_PUSH_PIN[idx], BUTTON_LED_PIN[idx]);
-        floatSensor[idx].initPin(FLOAT_SENSOR_PIN[idx]);
         // Use Emergency Button
         pinMode(BUTTON_EMERGENCY_PIN[idx], INPUT_PULLUP);
+        // Use Manual Button
+        pinMode(BUTTON_MANUAL_PIN[idx], INPUT_PULLUP);
+        // TODO: Enable pin
+        pinMode(DOSING_PUMP_ENABLE_PIN, OUTPUT);
         Dosing_Extr_Cmd[idx] = 0;
     }
 

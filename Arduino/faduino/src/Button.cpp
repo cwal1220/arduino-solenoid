@@ -16,7 +16,7 @@ void Button::initPin(unsigned char _buttonPin, unsigned char _ledPin)
 
 bool Button::isPushed()
 {
-    return !digitalRead(buttonPin);
+    return digitalRead(buttonPin); // Active High
 }
 
 void Button::setLedState(unsigned char _ledState)
