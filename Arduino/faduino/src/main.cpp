@@ -123,6 +123,7 @@ void checkProtocol()
                     dosingPump[dosingPumpIdx].setDoseAmount(doseAmount);
                     dosingPump[dosingPumpIdx].wait();
                     ledButton[dosingPumpIdx].blinkStart();
+                    digitalWrite(DOSING_PUMP_ENABLE_PIN[dosingPumpIdx], HIGH);
                     Dosing_Extr_Cmd[dosingPumpIdx] = 1;
                     // drawWait(dosingPumpIdx);
                 }
@@ -173,11 +174,6 @@ void checkButton()
 
 void checkDosingPump()
 {
-    for(int idx=0; idx<SENSOR_NUM; idx++)
-    {
-        digitalWrite(DOSING_PUMP_ENABLE_PIN[idx], dosingPump[idx].getDoseStat() == Dosing::RUN || dosingPump[idx].getDoseStat() == Dosing::MANUAL);
-    }
-
     if(dosingPump[0].getDoseStat() == Dosing::RUN || dosingPump[0].getDoseStat() == Dosing::MANUAL ||
        dosingPump[1].getDoseStat() == Dosing::RUN || dosingPump[1].getDoseStat() == Dosing::MANUAL ||
        dosingPump[2].getDoseStat() == Dosing::RUN || dosingPump[2].getDoseStat() == Dosing::MANUAL || 
@@ -209,6 +205,7 @@ void checkDosingPump()
             char sendStr[40] = {'\0',};
             sprintf(sendStr, "EXTR,%d,%d,%d\n", idx+1, dosingPump[idx].getDoseAmount(), dosingPump[idx].getDoseAmount());
             Serial.print(sendStr);
+            digitalWrite(DOSING_PUMP_ENABLE_PIN[idx], LOW);
         }
         else if(dosingPump[idx].check() == Dosing::STOP)
         {
@@ -229,10 +226,12 @@ void checkManualMode()
             if(dosingPump[idx].getDoseStat() == Dosing::STOP && digitalRead(BUTTON_MANUAL_PIN[idx]))
             {
                 dosingPump[idx].startManual();
+                digitalWrite(DOSING_PUMP_ENABLE_PIN[idx], HIGH);
             }
             else if(dosingPump[idx].getDoseStat() == Dosing::MANUAL && !digitalRead(BUTTON_MANUAL_PIN[idx]))
             {
                 dosingPump[idx].stop();
+                digitalWrite(DOSING_PUMP_ENABLE_PIN[idx], LOW);
            }
         }
     }
@@ -263,6 +262,7 @@ void checkEmergency()
                 // 완료메세지 전송
                 sprintf(sendStr, "EXTR,%d,%d,%d\n", idx+1, dosingPump[idx].getDoseAmount(), dosingPump[idx].getDoseAmount());
                 Serial.print(sendStr);
+                digitalWrite(DOSING_PUMP_ENABLE_PIN[idx], LOW);
             }
             
             dosingPump[idx].stop();
