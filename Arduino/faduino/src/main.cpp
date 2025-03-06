@@ -40,7 +40,7 @@ const int BUTTON_EMERGENCY_PIN[SENSOR_NUM] = {26, 25, 24, 23, 22};
 // const int BUTTON_MANUAL_PIN[SENSOR_NUM] = {7, 8, 9, 10, 11}; // Arduino Mega
 const int BUTTON_MANUAL_PIN[SENSOR_NUM] = {32, 31, 30, 29, 28}; // Faduino
 
-const int DOSING_PUMP_ENABLE_PIN = 11;
+const int DOSING_PUMP_ENABLE_PIN[SENSOR_NUM] = {43, 44, 45, 46, 47};
 
 void checkProtocol()
 {
@@ -123,6 +123,7 @@ void checkProtocol()
                     dosingPump[dosingPumpIdx].setDoseAmount(doseAmount);
                     dosingPump[dosingPumpIdx].wait();
                     ledButton[dosingPumpIdx].blinkStart();
+                    digitalWrite(DOSING_PUMP_ENABLE_PIN[dosingPumpIdx], HIGH);
                     Dosing_Extr_Cmd[dosingPumpIdx] = 1;
                     // drawWait(dosingPumpIdx);
                 }
@@ -179,7 +180,6 @@ void checkDosingPump()
        dosingPump[3].getDoseStat() == Dosing::RUN || dosingPump[3].getDoseStat() == Dosing::MANUAL ||
        dosingPump[4].getDoseStat() == Dosing::RUN || dosingPump[4].getDoseStat() == Dosing::MANUAL)
     {
-        digitalWrite(DOSING_PUMP_ENABLE_PIN, HIGH);
         dosingPump[0].upPulse();
         dosingPump[1].upPulse();
         dosingPump[2].upPulse();
@@ -193,10 +193,6 @@ void checkDosingPump()
         dosingPump[4].downPulse();
         delayMicroseconds(500);
     }
-    else
-    {
-        digitalWrite(DOSING_PUMP_ENABLE_PIN, LOW);
-    }
 
 
     for(int idx=0; idx<SENSOR_NUM; idx++)
@@ -209,6 +205,7 @@ void checkDosingPump()
             char sendStr[40] = {'\0',};
             sprintf(sendStr, "EXTR,%d,%d,%d\n", idx+1, dosingPump[idx].getDoseAmount(), dosingPump[idx].getDoseAmount());
             Serial.print(sendStr);
+            digitalWrite(DOSING_PUMP_ENABLE_PIN[idx], LOW);
         }
         else if(dosingPump[idx].check() == Dosing::STOP)
         {
@@ -229,10 +226,12 @@ void checkManualMode()
             if(dosingPump[idx].getDoseStat() == Dosing::STOP && digitalRead(BUTTON_MANUAL_PIN[idx]))
             {
                 dosingPump[idx].startManual();
+                digitalWrite(DOSING_PUMP_ENABLE_PIN[idx], HIGH);
             }
             else if(dosingPump[idx].getDoseStat() == Dosing::MANUAL && !digitalRead(BUTTON_MANUAL_PIN[idx]))
             {
                 dosingPump[idx].stop();
+                digitalWrite(DOSING_PUMP_ENABLE_PIN[idx], LOW);
            }
         }
     }
@@ -263,6 +262,7 @@ void checkEmergency()
                 // 완료메세지 전송
                 sprintf(sendStr, "EXTR,%d,%d,%d\n", idx+1, dosingPump[idx].getDoseAmount(), dosingPump[idx].getDoseAmount());
                 Serial.print(sendStr);
+                digitalWrite(DOSING_PUMP_ENABLE_PIN[idx], LOW);
             }
             
             dosingPump[idx].stop();
@@ -301,7 +301,7 @@ void setup()
         // Use Manual Button
         pinMode(BUTTON_MANUAL_PIN[idx], INPUT_PULLUP);
         // TODO: Enable pin
-        pinMode(DOSING_PUMP_ENABLE_PIN, OUTPUT);
+        pinMode(DOSING_PUMP_ENABLE_PIN[idx], OUTPUT);
         Dosing_Extr_Cmd[idx] = 0;
     }
 
