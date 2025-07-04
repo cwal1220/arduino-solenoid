@@ -25,11 +25,11 @@ public:
     static const unsigned int END = 4;
     static const unsigned int MANUAL = 5;
 
-    // TB6600에서 설정한 1회전당 펄스
-    static const float PULSE_PER_REV = 200.0;
 private:
     unsigned char pin;
-    float milliliterPerPulse = 0.685 * PULSE_PER_REV;
+    // TB6600에서 설정한 1회전당 펄스
+    float pulsePerRotation = 200.0;
+    float milliliterPerPulse = 0.39 * pulsePerRotation;
     unsigned int doseAmount = 0;
     float doseWeight = 1.0;
     unsigned int doseCnt = 0;

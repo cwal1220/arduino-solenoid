@@ -1,0 +1,44 @@
+@startuml
+skinparam monochrome true
+skinparam componentStyle rectangle
+
+title Modbus Register Map - Single Outlet Block (28 Registers)
+
+component "Outlet Block (Registers 0-27)" {
+  rectangle "0: CMD (2 bytes)" as CMD
+  rectangle "1: STATUS (2 bytes)" as STATUS
+  rectangle "2: dose (2 bytes)" as DOSE
+  rectangle "3: weight (2 bytes)" as WEIGHT
+  rectangle "4-15: user_name (24 bytes)" as USER_NAME
+  rectangle "16-27: drug_name (24 bytes)" as DRUG_NAME
+}
+
+note right of CMD
+  PC -> Arduino Command
+  (e.g., 1: DRUG_SETTING, 2: CLEANING)
+end note
+
+note right of STATUS
+  Arduino -> PC Status
+  (e.g., 0: STOPPED, 1: WAITING)
+end note
+
+note right of DOSE
+  Unsigned Integer
+end note
+
+note right of WEIGHT
+  Float (value * 100)
+end note
+
+note right of USER_NAME
+  UTF-8 encoded string
+  (12 x 2-byte registers)
+end note
+
+note right of DRUG_NAME
+  UTF-8 encoded string
+  (12 x 2-byte registers)
+end note
+
+@enduml
