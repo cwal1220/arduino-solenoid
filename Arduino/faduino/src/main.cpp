@@ -33,7 +33,7 @@
 // Define Dosing Pump Pulse PINs: OUTPUT
 const int DOSING_PUMP_PIN[NUM_OUTLETS]          = {6, 7, 8, 9, 10}; // {2, 3, 4, 5, 6}; for Mega
 // Define Dosing Pump Enable PINs: OUTPUT
-const int DOSING_PUMP_ENABLE_PIN[NUM_OUTLETS]   = {43, 44, 45, 46, 47};
+const int DOSING_PUMP_ENABLE_PIN[NUM_OUTLETS]   = {43, 44, 45, 46, 47}; // Active Low
 // Define Button LED PINs: OUTPUT
 const int BUTTON_LED_PIN[NUM_OUTLETS]           = {38, 39, 40, 41, 42}; // {31, 33, 35, 37, 39}; for Mega
 // Define Alive LED PINs: OUTPUT
@@ -66,15 +66,15 @@ void setup()
     // 입/출력 핀 설정
     for (int idx = 0; idx < NUM_OUTLETS; idx++)
     {
+        // Init Dosing Pump Pin
+        pinMode(DOSING_PUMP_ENABLE_PIN[idx], OUTPUT);
         digitalWrite(DOSING_PUMP_ENABLE_PIN[idx], HIGH);
         dosingPump[idx].initPin(DOSING_PUMP_PIN[idx]);
         ledButton[idx].initPin(BUTTON_PUSH_PIN[idx], BUTTON_LED_PIN[idx]);
-        // Use Emergency Button
+        // Init Emergency Button pin
         pinMode(BUTTON_EMERGENCY_PIN[idx], INPUT_PULLUP);
-        // Use Manual Button
+        // Init Manual Button pin
         pinMode(BUTTON_MANUAL_PIN[idx], INPUT_PULLUP);
-        // TODO: Enable pin
-        pinMode(DOSING_PUMP_ENABLE_PIN[idx], OUTPUT);
     }
 
     // Use for Alive_LED
