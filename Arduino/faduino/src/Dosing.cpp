@@ -36,18 +36,12 @@ void Dosing::setDoseWeight(float _doseWeight)
 
 void Dosing::upPulse()
 {
-    if(doseStat == RUN || doseStat == MANUAL) // RUN
-    {
-        digitalWrite(pin, HIGH);
-    }
+    digitalWrite(pin, HIGH);
 }
 
 void Dosing::downPulse()
 {
-    if(doseStat == RUN || doseStat == MANUAL) // RUN
-    {
-        digitalWrite(pin, LOW);
-    }
+    digitalWrite(pin, LOW);
 }
 
 void Dosing::start()
