@@ -56,11 +56,6 @@ void Dosing::start()
     doseStat = RUN; // RUN
 }
 
-void Dosing::startManual()
-{
-    doseStat = MANUAL;
-}
-
 unsigned int Dosing::check()
 {
     if(doseStat == RUN) // RUN
@@ -88,4 +83,15 @@ void Dosing::stop()
 {
     doseCnt = 0;
     doseStat = STOP;
+}
+
+void Dosing::startManual()
+{
+    prevStat = doseStat;
+    doseStat = MANUAL;
+}
+
+void Dosing::stopManual()
+{
+    doseStat = prevStat;
 }
