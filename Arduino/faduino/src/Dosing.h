@@ -13,10 +13,11 @@ public:
     void upPulse();
     void downPulse();
     void start();
-    void startManual();
     unsigned int check();
     void wait();
     void stop();
+    void startManual();
+    void stopManual();
 
     static const unsigned int STOP = 0;
     static const unsigned int SET = 1;
@@ -34,6 +35,7 @@ private:
     float doseWeight = 1.0;
     unsigned int doseCnt = 0;
     unsigned int doseStat = STOP; // 0:WAIT 1:RUN, 2:STOP
+    unsigned int prevStat = STOP; // 수동추출모드를 위해 이전 상태를 저장하기 위함.
 };
 
 #endif // DOSING_H

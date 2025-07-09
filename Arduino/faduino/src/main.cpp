@@ -47,9 +47,11 @@ const int BUTTON_MANUAL_PIN[NUM_OUTLETS]        = {32, 31, 30, 29, 28}; // {7, 8
 
 
 // --- 전역 변수 ---
-Dosing dosingPump[5];
-Button ledButton[5];
+Dosing dosingPump[NUM_OUTLETS];
+Button ledButton[NUM_OUTLETS];
+int prevStatus[NUM_OUTLETS];
 unsigned int holdingRegs[TOTAL_REGS];
+
 
 // --- 함수 프로토타입 ---
 void handle_outlet_logic(int outlet_index);
@@ -208,10 +210,7 @@ void handle_outlet_logic(int outlet_index)
         break;
 
     case STATUS_COMPLETE:
-        if (button_pressed)
-        {
-            holdingRegs[base_addr + OFFSET_STATUS] = STATUS_STOPPED;
-        }
+        holdingRegs[base_addr + OFFSET_STATUS] = STATUS_STOPPED;
         break;
 
     case STATUS_MANUAL:
@@ -249,21 +248,23 @@ void checkManualMode()
         int base_addr = idx * REGS_PER_OUTLET;
         // Condition to START manual mode:
         // Pump is STOP or WAIT state AND manual button is pressed
-        if ((dosingPump[idx].getDoseStat() == Dosing::STOP ||
-             dosingPump[idx].getDoseStat() == Dosing::WAIT) &&
-            digitalRead(BUTTON_MANUAL_PIN[idx]))
+        if ( (dosingPump[idx].getDoseStat() != Dosing::RUN) && (dosingPump[idx].getDoseStat() != Dosing::MANUAL) && digitalRead(BUTTON_MANUAL_PIN[idx]) )
         {
             dosingPump[idx].startManual();                  // Set pump state to MANUAL
             digitalWrite(DOSING_PUMP_ENABLE_PIN[idx], LOW); // Enable the pump motor for manual control
+            prevStatus[idx] = holdingRegs[base_addr + OFFSET_STATUS];
             holdingRegs[base_addr + OFFSET_STATUS] = STATUS_MANUAL;
         }
         // Condition to STOP manual mode:
         // Pump is in MANUAL state AND manual button is released
-        else if (dosingPump[idx].getDoseStat() == Dosing::MANUAL && !digitalRead(BUTTON_MANUAL_PIN[idx]))
+        else if ( (dosingPump[idx].getDoseStat() == Dosing::MANUAL) && !digitalRead(BUTTON_MANUAL_PIN[idx]) )
         {
-            dosingPump[idx].stop();
-            digitalWrite(DOSING_PUMP_ENABLE_PIN[idx], HIGH); // Disable the pump motor immediately
-            holdingRegs[base_addr + OFFSET_STATUS] = STATUS_STOPPED;
+            dosingPump[idx].stopManual();
+            if(prevStatus[idx] != STATUS_WAITING)
+            {
+                digitalWrite(DOSING_PUMP_ENABLE_PIN[idx], HIGH); // Disable the pump motor immediately
+            }
+            holdingRegs[base_addr + OFFSET_STATUS] = prevStatus[idx];
         }
     }
 }
