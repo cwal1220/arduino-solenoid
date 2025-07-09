@@ -13,10 +13,11 @@ public:
     void upPulse();
     void downPulse();
     void start();
-    void startManual();
     unsigned int check();
     void wait();
     void stop();
+    void startManual();
+    void stopManual();
 
     static const unsigned int STOP = 0;
     static const unsigned int SET = 1;
