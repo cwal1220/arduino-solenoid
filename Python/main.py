@@ -212,7 +212,7 @@ class MainWidget(QWidget, Ui_MainWidget):
         if port_name != "-":
             self.modbus_client = ModbusClient(
                 method='rtu', port=port_name, baudrate=9600,
-                stopbits=1, bytesize=8, parity='N', timeout=0.5
+                stopbits=1, bytesize=8, parity='N', timeout=20
             )
             if self.modbus_client.connect():
                 self._log(f"[INFO] Modbus 연결 성공: {port_name}")

@@ -51,7 +51,7 @@ Dosing dosingPump[NUM_OUTLETS];
 Button ledButton[NUM_OUTLETS];
 int prevStatus[NUM_OUTLETS];
 unsigned int holdingRegs[TOTAL_REGS];
-
+unsigned int mbUpdateCnt = 0;
 
 // --- 함수 프로토타입 ---
 void handle_outlet_logic(int outlet_index);
@@ -103,7 +103,15 @@ void setup()
 void loop()
 {
     // 1. Modbus 요청 처리 (전체 레지스터 대상)
-    modbus_update(holdingRegs);
+    if(mbUpdateCnt > 500)
+    {
+        modbus_update(holdingRegs);
+        mbUpdateCnt = 0;
+    }
+    else
+    {
+        mbUpdateCnt++;
+    }
 
     // 2. 각 토출구의 로직을 순차적으로 처리
     for (int i = 0; i < NUM_OUTLETS; i++)
@@ -205,7 +213,8 @@ void handle_outlet_logic(int outlet_index)
             digitalWrite(DOSING_PUMP_ENABLE_PIN[outlet_index], HIGH);
             delay(100);
             drawDisplay(outlet_index, "", "", 0);
-            holdingRegs[base_addr + OFFSET_STATUS] = STATUS_COMPLETE;
+            // holdingRegs[base_addr + OFFSET_STATUS] = STATUS_COMPLETE;
+            holdingRegs[base_addr + OFFSET_STATUS] = STATUS_STOPPED;
         }
         break;
 
