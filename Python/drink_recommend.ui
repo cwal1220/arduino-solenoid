@@ -1,0 +1,716 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>DrinkRecommendation</class>
+ <widget class="QWidget" name="DrinkRecommendation">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>909</width>
+    <height>601</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>🤖 AI Drink Recommend System</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">QWidget {
+  background-color: #121212;
+  color: #e0e0e0;
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 14px;
+}
+
+/* 제목 라벨 */
+QLabel#labelTitle {
+  font-size: 22px;
+  font-weight: bold;
+  color: #00bcd4;
+
+}
+
+/* 그룹박스 */
+QGroupBox {
+  border: 1px solid #00bcd4;
+  border-radius: 6px;
+  margin-top: 10px;
+  padding: 8px;
+}
+QGroupBox:title {
+  subcontrol-origin: margin;
+  subcontrol-position: top left;
+  color: #00bcd4;
+  font-weight: bold;
+}
+
+/* 버튼 */
+QPushButton {
+  background-color: #00bcd4;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 6px;
+  font-weight: bold;
+}
+QPushButton:hover {
+  background-color: #00acc1;
+}
+QPushButton:disabled {
+  background-color: #777777;  /* 회색 배경 */
+  color: #cccccc;             /* 흐릿한 글자 색상 */
+}
+
+/* 슬라이더 */
+QSlider::handle:horizontal {
+  background: #00bcd4;
+  border: 1px solid #ffffff;
+  width: 14px;
+  margin: -4px 0;
+}
+
+/* 라디오버튼 */
+QRadioButton {
+  spacing: 8px;
+  color: #e0e0e0;
+}
+QRadioButton::indicator {
+  width: 16px;
+  height: 16px;
+}
+QRadioButton::indicator:checked {
+  background-color: #00bcd4;
+  border: 1px solid #00acc1;
+  border-radius: 8px;
+}
+QRadioButton::indicator:unchecked {
+  background-color: #333333;
+  border: 1px solid #888888;
+  border-radius: 8px;
+}
+
+/* 스핀박스 */
+QSpinBox {
+  background-color: #1e1e1e;
+  border: 1px solid #00bcd4;
+  border-radius: 5px;
+  padding: 4px 8px;
+  color: #ffffff;
+  font-weight: bold;
+}
+QSpinBox::up-button, QSpinBox::down-button {
+  subcontrol-origin: border;
+  width: 16px;
+  background-color: #00bcd4;
+  border-radius: 2px;
+}
+QSpinBox::up-arrow, QSpinBox::down-arrow {
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+}
+QSpinBox::up-arrow {
+  border-bottom: 7px solid #ffffff;
+  margin-top: 2px;
+}
+QSpinBox::down-arrow {
+  border-top: 7px solid #ffffff;
+  margin-bottom: 2px;
+}
+
+/* 콤보박스 */
+QComboBox {
+  background-color: #1e1e1e;
+  border: 1px solid #00bcd4;
+  border-radius: 5px;
+  padding: 4px 8px;
+  color: #ffffff;
+  font-weight: bold;
+}
+QComboBox QAbstractItemView {
+  background-color: #1e1e1e;
+  color: white;
+  selection-background-color: #00bcd4;
+}
+</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout_4">
+   <item>
+    <widget class="QStackedWidget" name="stackedWidget">
+     <property name="currentIndex">
+      <number>0</number>
+     </property>
+     <widget class="QWidget" name="userInfoWidget">
+      <layout class="QVBoxLayout" name="verticalLayout_7">
+       <item>
+        <widget class="QLabel" name="labelTitle">
+         <property name="styleSheet">
+          <string notr="true">font-size: 20px; color: #00aaff; font-weight: bold;</string>
+         </property>
+         <property name="text">
+          <string>🤖 AI Drink Recommend System</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <item>
+          <widget class="QGroupBox" name="groupBox">
+           <property name="title">
+            <string>운동 정보</string>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout_2">
+            <item>
+             <widget class="QGroupBox" name="groupActivity">
+              <property name="title">
+               <string>🏃오늘 활동량</string>
+              </property>
+              <layout class="QHBoxLayout" name="activityLayout">
+               <item>
+                <widget class="QRadioButton" name="radioActivityLow">
+                 <property name="text">
+                  <string>낮음</string>
+                 </property>
+                 <property name="checked">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QRadioButton" name="radioActivityMedium">
+                 <property name="text">
+                  <string>보통</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QRadioButton" name="radioActivityHigh">
+                 <property name="text">
+                  <string>많음</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </item>
+            <item>
+             <widget class="QGroupBox" name="groupActivity_2">
+              <property name="title">
+               <string>🏋️무산소 운동 강도</string>
+              </property>
+              <layout class="QHBoxLayout" name="activityLayout_2">
+               <item>
+                <widget class="QRadioButton" name="radioAnaerobicLow">
+                 <property name="text">
+                  <string>낮음</string>
+                 </property>
+                 <property name="checked">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QRadioButton" name="radioAnaerobicMedium">
+                 <property name="text">
+                  <string>보통</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QRadioButton" name="radioAnaerobicHigh">
+                 <property name="text">
+                  <string>높음</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </item>
+            <item>
+             <widget class="QGroupBox" name="groupActivity_3">
+              <property name="title">
+               <string>🏃‍유산소 운동 강도</string>
+              </property>
+              <layout class="QHBoxLayout" name="activityLayout_3">
+               <item>
+                <widget class="QRadioButton" name="radioAerobicLow">
+                 <property name="text">
+                  <string>낮음</string>
+                 </property>
+                 <property name="checked">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QRadioButton" name="radioAerobicMedium">
+                 <property name="text">
+                  <string>보통</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QRadioButton" name="radioAerobicHigh">
+                 <property name="text">
+                  <string>높음</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </item>
+            <item>
+             <widget class="QGroupBox" name="groupSweat">
+              <property name="title">
+               <string>💦땀 흘린 양</string>
+              </property>
+              <layout class="QHBoxLayout" name="sweatLayout">
+               <item>
+                <widget class="QRadioButton" name="radioSweatLow">
+                 <property name="text">
+                  <string>적음</string>
+                 </property>
+                 <property name="checked">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QRadioButton" name="radioSweatMedium">
+                 <property name="text">
+                  <string>보통</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QRadioButton" name="radioSweatHigh">
+                 <property name="text">
+                  <string>많음</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <widget class="QGroupBox" name="groupBox_2">
+           <property name="title">
+            <string>신체 정보</string>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout_3">
+            <item>
+             <widget class="QGroupBox" name="groupActivity_4">
+              <property name="title">
+               <string>📏키</string>
+              </property>
+              <layout class="QHBoxLayout" name="activityLayout_4">
+               <item>
+                <widget class="QSpinBox" name="spinHeight">
+                 <property name="buttonSymbols">
+                  <enum>QAbstractSpinBox::UpDownArrows</enum>
+                 </property>
+                 <property name="suffix">
+                  <string> cm</string>
+                 </property>
+                 <property name="prefix">
+                  <string/>
+                 </property>
+                 <property name="minimum">
+                  <number>100</number>
+                 </property>
+                 <property name="maximum">
+                  <number>250</number>
+                 </property>
+                 <property name="value">
+                  <number>175</number>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </item>
+            <item>
+             <widget class="QGroupBox" name="groupActivity_5">
+              <property name="title">
+               <string>⚖️몸무게</string>
+              </property>
+              <layout class="QHBoxLayout" name="activityLayout_5">
+               <item>
+                <widget class="QSpinBox" name="spinWeight">
+                 <property name="suffix">
+                  <string> kg</string>
+                 </property>
+                 <property name="prefix">
+                  <string/>
+                 </property>
+                 <property name="minimum">
+                  <number>30</number>
+                 </property>
+                 <property name="maximum">
+                  <number>200</number>
+                 </property>
+                 <property name="value">
+                  <number>70</number>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </item>
+            <item>
+             <widget class="QGroupBox" name="groupActivity_6">
+              <property name="title">
+               <string>🎯감량 목표</string>
+              </property>
+              <layout class="QHBoxLayout" name="activityLayout_6">
+               <item>
+                <widget class="QSpinBox" name="spinGoal">
+                 <property name="suffix">
+                  <string> kg</string>
+                 </property>
+                 <property name="prefix">
+                  <string/>
+                 </property>
+                 <property name="maximum">
+                  <number>50</number>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </item>
+            <item>
+             <widget class="QGroupBox" name="groupActivity_7">
+              <property name="title">
+               <string>👤나이</string>
+              </property>
+              <layout class="QHBoxLayout" name="activityLayout_7">
+               <item>
+                <widget class="QSpinBox" name="spinAge">
+                 <property name="suffix">
+                  <string> 세</string>
+                 </property>
+                 <property name="prefix">
+                  <string/>
+                 </property>
+                 <property name="minimum">
+                  <number>10</number>
+                 </property>
+                 <property name="maximum">
+                  <number>100</number>
+                 </property>
+                 <property name="value">
+                  <number>20</number>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </item>
+            <item>
+             <widget class="QGroupBox" name="groupGender">
+              <property name="title">
+               <string>🚻성별</string>
+              </property>
+              <layout class="QHBoxLayout" name="activityLayout_8">
+               <item>
+                <widget class="QRadioButton" name="radioGenderMale">
+                 <property name="text">
+                  <string>남성</string>
+                 </property>
+                 <property name="checked">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QRadioButton" name="radioGenderFemale">
+                 <property name="text">
+                  <string>여성</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <widget class="QGroupBox" name="groupBox_3">
+           <property name="title">
+            <string>진행상황</string>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout">
+            <item>
+             <widget class="QGroupBox" name="groupBox_5">
+              <property name="title">
+               <string>🖥️ 진행상황</string>
+              </property>
+              <layout class="QVBoxLayout" name="verticalLayout_6">
+               <item>
+                <widget class="QTextEdit" name="textProgress">
+                 <property name="readOnly">
+                  <bool>true</bool>
+                 </property>
+                 <property name="html">
+                  <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Segoe UI','sans-serif'; font-size:14px; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:14px;&quot;&gt;추천받기 버튼을 누르세요!&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="QPushButton" name="btnRecommend">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="styleSheet">
+          <string notr="true"/>
+         </property>
+         <property name="text">
+          <string>🤔 음료 추천 받기</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="extractWidget">
+      <layout class="QVBoxLayout" name="verticalLayout_5">
+       <item>
+        <widget class="QGroupBox" name="groupBox_6">
+         <property name="title">
+          <string>추천 결과</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_8">
+          <item>
+           <widget class="QGroupBox" name="groupExtract">
+            <property name="title">
+             <string>🫗추천 섭취량</string>
+            </property>
+            <layout class="QHBoxLayout" name="horizontalLayout">
+             <item>
+              <widget class="QGroupBox" name="groupBox_9">
+               <property name="title">
+                <string>프로틴</string>
+               </property>
+               <layout class="QHBoxLayout" name="horizontalLayout_3">
+                <item>
+                 <widget class="QSpinBox" name="spinProtein">
+                  <property name="suffix">
+                   <string> ml</string>
+                  </property>
+                  <property name="maximum">
+                   <number>500</number>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+             </item>
+             <item>
+              <widget class="QGroupBox" name="groupBox_10">
+               <property name="title">
+                <string>마그네슘</string>
+               </property>
+               <layout class="QHBoxLayout" name="horizontalLayout_4">
+                <item>
+                 <widget class="QSpinBox" name="spinMg">
+                  <property name="suffix">
+                   <string> ml</string>
+                  </property>
+                  <property name="maximum">
+                   <number>500</number>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+             </item>
+             <item>
+              <widget class="QGroupBox" name="groupBox_11">
+               <property name="title">
+                <string>전해질</string>
+               </property>
+               <layout class="QHBoxLayout" name="horizontalLayout_5">
+                <item>
+                 <widget class="QSpinBox" name="spinElect">
+                  <property name="suffix">
+                   <string> ml</string>
+                  </property>
+                  <property name="maximum">
+                   <number>500</number>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+             </item>
+             <item>
+              <widget class="QGroupBox" name="groupBox_12">
+               <property name="title">
+                <string>프리-워크아웃</string>
+               </property>
+               <layout class="QHBoxLayout" name="horizontalLayout_6">
+                <item>
+                 <widget class="QSpinBox" name="spinFree">
+                  <property name="suffix">
+                   <string> ml</string>
+                  </property>
+                  <property name="maximum">
+                   <number>500</number>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+             </item>
+             <item>
+              <widget class="QGroupBox" name="groupBox_13">
+               <property name="title">
+                <string>칼로리버너</string>
+               </property>
+               <layout class="QHBoxLayout" name="horizontalLayout_7">
+                <item>
+                 <widget class="QSpinBox" name="spinCal">
+                  <property name="suffix">
+                   <string> ml</string>
+                  </property>
+                  <property name="maximum">
+                   <number>500</number>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <widget class="QGroupBox" name="groupBox_8">
+            <property name="title">
+             <string>🤔추천 이유</string>
+            </property>
+            <layout class="QVBoxLayout" name="verticalLayout_10">
+             <item>
+              <widget class="QTextEdit" name="textResult">
+               <property name="readOnly">
+                <bool>true</bool>
+               </property>
+               <property name="html">
+                <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Segoe UI','sans-serif'; font-size:14px; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:14px;&quot;&gt;추천받기 버튼을 누르세요!&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_8">
+         <item>
+          <widget class="QPushButton" name="btnReturn">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="styleSheet">
+            <string notr="true"/>
+           </property>
+           <property name="text">
+            <string>⬅️ 사용자 데이터 입력</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="btnExtract">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="styleSheet">
+            <string notr="true"/>
+           </property>
+           <property name="text">
+            <string>⏏️ 추출하기</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_9">
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QTextEdit" name="logEdit">
+       <property name="maximumSize">
+        <size>
+         <width>500</width>
+         <height>30</height>
+        </size>
+       </property>
+       <property name="verticalScrollBarPolicy">
+        <enum>Qt::ScrollBarAlwaysOn</enum>
+       </property>
+       <property name="horizontalScrollBarPolicy">
+        <enum>Qt::ScrollBarAlwaysOff</enum>
+       </property>
+       <property name="readOnly">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="comPortsComboBox">
+       <property name="maximumSize">
+        <size>
+         <width>100</width>
+         <height>30</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

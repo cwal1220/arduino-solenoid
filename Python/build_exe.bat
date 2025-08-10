@@ -1,1 +1,1 @@
-pyinstaller main.spec
+pyinstaller drink_recommend.spec
